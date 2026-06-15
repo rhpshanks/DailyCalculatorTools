@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getToolBySlug, getActiveTools } from '../data/tools';
 import AdRail from '../components/AdRail';
 import ToolFactory from '../tools/ToolFactory';
 import { 
-  Search, 
-  Briefcase, 
   ArrowRightLeft, 
-  FileText, 
-  Type, 
-  Image as ImageIcon, 
-  Calendar, 
   ChevronDown, 
   ChevronUp, 
   ChevronRight,
@@ -20,20 +14,9 @@ import {
   HelpCircle
 } from 'lucide-react';
 
-const categoryDetails = [
-  { name: 'Business', label: 'Business Calculators', desc: 'Finance, loans, tax, investment & more', icon: Briefcase },
-  { name: 'Unit Converter', label: 'Unit Converters', desc: 'Length, weight, area, volume & more', icon: ArrowRightLeft },
-  { name: 'Print & Paper', label: 'Paper & Print Tools', desc: 'A4, letter, margins, size converters', icon: FileText },
-  { name: 'Text', label: 'Text Tools', desc: 'Case converter, word counter, formatter', icon: Type },
-  { name: 'Image & Media', label: 'Image Tools', desc: 'Resize, compress, converters & more', icon: ImageIcon },
-  { name: 'Daily Use', label: 'Daily-use Tools', desc: 'Date, time, age, BMI, temperature & more', icon: Calendar }
-];
-
 export default function ToolPage() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const tool = slug ? getToolBySlug(slug) : null;
-  const [searchValue, setSearchValue] = useState('');
   const [openFaqs, setOpenFaqs] = useState<Record<number, boolean>>({ 0: true }); // first FAQ open by default
   
   if (!tool) {
@@ -51,94 +34,12 @@ export default function ToolPage() {
   // Related tools
   const relatedTools = getActiveTools().filter(t => tool.relatedTools.includes(t.slug));
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchValue.trim()) {
-      navigate(`/?q=${encodeURIComponent(searchValue.trim())}`);
-    }
-  };
-
-  const handleCategoryClick = (catName: string) => {
-    navigate(`/?q=${encodeURIComponent(catName)}`);
-  };
-
   const toggleFaq = (index: number) => {
     setOpenFaqs(prev => ({ ...prev, [index]: !prev[index] }));
   };
 
   return (
-    <div className="w-full flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors">
-      {/* Search Header Banner (matching Homepage) */}
-      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-10 pb-8 px-4 transition-colors">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Search Box */}
-          <form onSubmit={handleSearchSubmit} className="relative max-w-2xl mx-auto mb-6">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-              <Search className="h-5 w-5" />
-            </div>
-            <div className="relative flex items-center bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all overflow-hidden">
-              <input
-                type="text"
-                className="block w-full pl-11 pr-28 py-3 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder-slate-400"
-                placeholder="Search calculators and converters..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              <button 
-                type="submit"
-                className="absolute right-2 top-1.5 bottom-1.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] rounded-lg transition-colors cursor-pointer shadow-sm border border-transparent"
-              >
-                Search
-              </button>
-            </div>
-          </form>
-          
-          {/* Popular Search Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto text-xs">
-            <span className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider text-[11px]">Popular searches:</span>
-            {[
-              { label: 'Percentage', query: 'Percentage' },
-              { label: 'BMI', query: 'BMI' },
-              { label: 'Loan EMI', query: 'Loan' },
-              { label: 'Unit Converter', query: 'Unit Converter' },
-              { label: 'Age Calculator', query: 'Age' },
-              { label: 'Discount', query: 'Discount' }
-            ].map((pill) => (
-              <button
-                key={pill.label}
-                onClick={() => navigate(`/?q=${pill.query}`)}
-                className="px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-600 dark:text-slate-300 font-medium rounded-full transition-colors cursor-pointer shadow-sm"
-              >
-                {pill.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Category Icons Overlay */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-10 w-full">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categoryDetails.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <button
-                key={cat.name}
-                onClick={() => handleCategoryClick(cat.name)}
-                className="flex flex-col items-center text-center p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-sm transition-all group cursor-pointer"
-              >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-all shrink-0">
-                  <Icon className="w-4.5 h-4.5" />
-                </div>
-                <h3 className="font-bold text-slate-800 dark:text-white text-[13px] leading-tight mb-0.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {cat.label}
-                </h3>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
+    <div className="w-full flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors pt-8">
       {/* Main Grid: Split Layout */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -184,7 +85,7 @@ export default function ToolPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="my-5 bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-200 dark:border-slate-800 font-mono text-slate-850 dark:text-slate-300 text-sm">
+                        <div className="my-5 bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-200 dark:border-slate-800 font-mono text-slate-855 dark:text-slate-300 text-sm">
                           {tool.formulaText}
                         </div>
                       )}
@@ -198,7 +99,7 @@ export default function ToolPage() {
                     <div>
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                         <BookOpen className="w-5 h-5 text-indigo-500" />
-                        <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Example</span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-slate-555 dark:text-slate-400">Example</span>
                       </div>
                       <p className="text-[14.5px] text-slate-605 dark:text-slate-350 leading-relaxed font-semibold">
                         {tool.exampleText}
@@ -212,7 +113,7 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <TrendingUp className="w-5 h-5 text-emerald-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Common Values</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-555 dark:text-slate-400">Common Values</span>
                     </div>
                     <div className="overflow-hidden border border-slate-200 dark:border-slate-800 rounded-xl">
                       <table className="w-full text-[14px]">
@@ -222,9 +123,9 @@ export default function ToolPage() {
                             <th className="px-4 py-2.5">{tool.tableData.headers[1]}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-200 dark:divide-slate-850 text-slate-650 dark:text-slate-400 font-medium">
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-855 text-slate-650 dark:text-slate-400 font-medium">
                           {tool.tableData.rows.map((row, idx) => (
-                            <tr key={idx} className="hover:bg-slate-50/40 dark:hover:bg-slate-850/40 transition-colors">
+                            <tr key={idx} className="hover:bg-slate-50/40 dark:hover:bg-slate-855/40 transition-colors">
                               <td className="px-4 py-2.5 text-slate-900 dark:text-white">{row.label}</td>
                               <td className="px-4 py-2.5 font-bold text-slate-800 dark:text-slate-300">{row.value}</td>
                             </tr>
@@ -240,7 +141,7 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <HelpCircle className="w-5 h-5 text-amber-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">FAQ</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-555 dark:text-slate-400">FAQ</span>
                     </div>
                     <div className="space-y-2.5">
                       {tool.faqs.map((faq, idx) => {
@@ -271,7 +172,7 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-2">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <ArrowRightLeft className="w-5 h-5 text-purple-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Related Tools</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-555 dark:text-slate-400">Related Tools</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {relatedTools.map((rt) => (
