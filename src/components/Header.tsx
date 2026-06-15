@@ -39,20 +39,7 @@ export default function Header() {
           <span className="sm:hidden text-lg">CCT</span>
         </Link>
 
-        {/* Center: Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-[15px] font-medium text-slate-600 dark:text-slate-300">
-          <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Calculators</Link>
-          <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Converters</a>
-          <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tools</a>
-          <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Resources</a>
-          <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</a>
-          <div className="relative group cursor-pointer flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-            <span>About</span>
-            <ChevronDown className="w-4 h-4 opacity-70" />
-          </div>
-        </nav>
-
-        {/* Right Side: Theme Toggle, Favorites, Sign In */}
+        {/* Right Side: Theme Toggle */}
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleDarkMode}
@@ -60,16 +47,6 @@ export default function Header() {
             title="Toggle theme"
           >
             {darkMode ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
-          </button>
-          
-          <button className="hidden sm:flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium text-[15px] transition-colors cursor-pointer">
-            <Star className="w-[18px] h-[18px]" />
-            <span>Favorites</span>
-          </button>
-
-          <button className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-[14px] rounded-lg shadow-sm hover:shadow transition-all cursor-pointer border border-transparent">
-            <User className="w-[16px] h-[16px]" />
-            <span>Sign In</span>
           </button>
         </div>
       </div>
