@@ -67,7 +67,7 @@ export default function Header() {
             <span>Favorites</span>
           </button>
 
-          <button className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-[14px] rounded-full shadow-md shadow-blue-600/10 transition-colors cursor-pointer">
+          <button className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-[14px] rounded-lg shadow-sm hover:shadow transition-all cursor-pointer border border-transparent">
             <User className="w-[16px] h-[16px]" />
             <span>Sign In</span>
           </button>

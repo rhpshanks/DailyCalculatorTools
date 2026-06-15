@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, RefreshCw, Calculator, Percent, DollarSign } from 'lucide-react';
+import { Copy, RefreshCw, Calculator, Coins } from 'lucide-react';
 
 export default function ReversePercentageCalculator() {
   const [total, setTotal] = useState<string>('590');
@@ -54,14 +54,14 @@ export default function ReversePercentageCalculator() {
       <div className="md:col-span-7 flex flex-col justify-between space-y-6">
         <div className="space-y-4">
           <div>
-            <label className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Total Amount (After % applied)</label>
-            <div className="relative rounded-xl shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                <DollarSign className="h-[18px] w-[18px]" />
+            <label className="block text-[14px] font-semibold text-slate-700 dark:text-slate-350 mb-2">Total Amount (After % applied)</label>
+            <div className="flex rounded-xl border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-hidden bg-white dark:bg-slate-900 transition-shadow">
+              <div className="flex items-center justify-center bg-slate-100/60 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 px-4 text-slate-400 dark:text-slate-500 select-none shrink-0">
+                <Coins className="h-[16px] w-[16px]" />
               </div>
               <input
                 type="number"
-                className="block w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-[16px] text-slate-900 dark:text-white transition-all"
+                className="block w-full px-4 py-3 bg-transparent outline-none text-[16px] text-slate-955 dark:text-white placeholder-slate-400"
                 placeholder="e.g. 590"
                 value={total}
                 onChange={(e) => setTotal(e.target.value)}
@@ -70,14 +70,14 @@ export default function ReversePercentageCalculator() {
           </div>
 
           <div>
-            <label className="block text-[14px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Percentage Added (%)</label>
-            <div className="relative rounded-xl shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                <Percent className="h-[16px] w-[16px]" />
+            <label className="block text-[14px] font-semibold text-slate-700 dark:text-slate-350 mb-2">Percentage Added (%)</label>
+            <div className="flex rounded-xl border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-hidden bg-white dark:bg-slate-900 transition-shadow">
+              <div className="flex items-center justify-center bg-slate-100/60 dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 px-4.5 text-[15px] font-bold text-slate-500 dark:text-slate-400 select-none shrink-0">
+                %
               </div>
               <input
                 type="number"
-                className="block w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-[16px] text-slate-900 dark:text-white transition-all"
+                className="block w-full px-4 py-3 bg-transparent outline-none text-[16px] text-slate-955 dark:text-white placeholder-slate-400"
                 placeholder="e.g. 18"
                 value={percentage}
                 onChange={(e) => setPercentage(e.target.value)}
@@ -88,7 +88,7 @@ export default function ReversePercentageCalculator() {
 
         <button
           onClick={handleCalculate}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/10 hover:shadow-blue-600/20 active:scale-[0.99] transition-all cursor-pointer mt-4"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm hover:shadow active:scale-[0.99] transition-all cursor-pointer border border-transparent mt-4"
         >
           <Calculator className="w-[18px] h-[18px]" />
           <span>Calculate</span>
@@ -97,36 +97,36 @@ export default function ReversePercentageCalculator() {
 
       {/* Result Column */}
       <div className="md:col-span-5 flex">
-        <div className="w-full bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[200px] transition-colors">
+        <div className="w-full bg-[#f0fdf4]/80 dark:bg-emerald-950/10 border border-[#dcfce7] dark:border-emerald-900/30 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[220px] transition-colors">
           <div>
             <span className="text-[12px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">Original Value</span>
             <div className="text-5xl font-extrabold text-emerald-600 dark:text-emerald-400 my-4 tracking-tight">
               {calculatedResult ? calculatedResult.originalValue.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '--'}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <p className="text-[14px] text-slate-650 dark:text-slate-400 font-semibold leading-relaxed">
               {calculatedResult 
                 ? `Difference Amount: ${calculatedResult.difference.toLocaleString(undefined, { maximumFractionDigits: 2 })}` 
                 : 'Enter values to calculate'}
             </p>
           </div>
 
-          <div className="flex gap-2 w-full mt-6">
+          <div className="flex flex-col sm:flex-row gap-2 w-full mt-6 justify-center">
             {calculatedResult && (
               <button 
                 onClick={handleCopy} 
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-[13px] font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-[13px] font-semibold rounded-xl shadow-sm hover:shadow transition-all cursor-pointer"
                 title="Copy result"
               >
-                <Copy className="w-4 h-4" />
+                <Copy className="w-3.5 h-3.5" />
                 <span>Copy</span>
               </button>
             )}
             <button 
               onClick={handleReset} 
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 text-[13px] font-semibold rounded-lg shadow-sm transition-colors cursor-pointer"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 text-[13px] font-semibold rounded-xl shadow-sm hover:shadow transition-all cursor-pointer"
               title="Reset fields"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-3.5 h-3.5" />
               <span>Reset</span>
             </button>
           </div>

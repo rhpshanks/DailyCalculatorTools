@@ -15,19 +15,18 @@ import {
   ChevronUp, 
   ChevronRight,
   BookOpen,
-  HelpCircle,
   TrendingUp,
-  Percent,
-  Coins
+  Coins,
+  HelpCircle
 } from 'lucide-react';
 
 const categoryDetails = [
-  { name: 'Business', label: 'Business Calculators', desc: 'Finance, loans, tax, investment & more', icon: Briefcase, color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30' },
-  { name: 'Unit Converter', label: 'Unit Converters', desc: 'Length, weight, area, volume & more', icon: ArrowRightLeft, color: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/20 border-sky-100 dark:border-sky-800/30' },
-  { name: 'Print & Paper', label: 'Paper & Print Tools', desc: 'A4, letter, margins, size converters', icon: FileText, color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30' },
-  { name: 'Text', label: 'Text Tools', desc: 'Case converter, word counter, formatter', icon: Type, color: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border-purple-100 dark:border-purple-800/30' },
-  { name: 'Image & Media', label: 'Image Tools', desc: 'Resize, compress, converters & more', icon: ImageIcon, color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30' },
-  { name: 'Daily Use', label: 'Daily-use Tools', desc: 'Date, time, age, BMI, temperature & more', icon: Calendar, color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/30' }
+  { name: 'Business', label: 'Business Calculators', desc: 'Finance, loans, tax, investment & more', icon: Briefcase },
+  { name: 'Unit Converter', label: 'Unit Converters', desc: 'Length, weight, area, volume & more', icon: ArrowRightLeft },
+  { name: 'Print & Paper', label: 'Paper & Print Tools', desc: 'A4, letter, margins, size converters', icon: FileText },
+  { name: 'Text', label: 'Text Tools', desc: 'Case converter, word counter, formatter', icon: Type },
+  { name: 'Image & Media', label: 'Image Tools', desc: 'Resize, compress, converters & more', icon: ImageIcon },
+  { name: 'Daily Use', label: 'Daily-use Tools', desc: 'Date, time, age, BMI, temperature & more', icon: Calendar }
 ];
 
 export default function ToolPage() {
@@ -68,16 +67,16 @@ export default function ToolPage() {
   };
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors">
       {/* Search Header Banner (matching Homepage) */}
-      <section className="bg-gradient-to-b from-blue-50/50 via-white to-slate-50 dark:from-slate-900/20 dark:via-slate-950 dark:to-slate-950 pt-10 pb-8 px-4 transition-colors">
+      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-10 pb-8 px-4 transition-colors">
         <div className="max-w-4xl mx-auto text-center">
           {/* Search Box */}
           <form onSubmit={handleSearchSubmit} className="relative max-w-2xl mx-auto mb-6">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
               <Search className="h-5 w-5" />
             </div>
-            <div className="relative flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all overflow-hidden">
+            <div className="relative flex items-center bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all overflow-hidden">
               <input
                 type="text"
                 className="block w-full pl-11 pr-28 py-3 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder-slate-400"
@@ -87,7 +86,7 @@ export default function ToolPage() {
               />
               <button 
                 type="submit"
-                className="absolute right-2 top-1.5 bottom-1.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] rounded-xl transition-colors cursor-pointer shadow-sm"
+                className="absolute right-2 top-1.5 bottom-1.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] rounded-lg transition-colors cursor-pointer shadow-sm border border-transparent"
               >
                 Search
               </button>
@@ -96,7 +95,7 @@ export default function ToolPage() {
           
           {/* Popular Search Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto text-xs">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">Popular searches:</span>
+            <span className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider text-[11px]">Popular searches:</span>
             {[
               { label: 'Percentage', query: 'Percentage' },
               { label: 'BMI', query: 'BMI' },
@@ -108,7 +107,7 @@ export default function ToolPage() {
               <button
                 key={pill.label}
                 onClick={() => navigate(`/?q=${pill.query}`)}
-                className="px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium rounded-full transition-colors cursor-pointer shadow-sm"
+                className="px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-600 dark:text-slate-300 font-medium rounded-full transition-colors cursor-pointer shadow-sm"
               >
                 {pill.label}
               </button>
@@ -118,8 +117,8 @@ export default function ToolPage() {
       </section>
 
       {/* Category Icons Overlay */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 mb-10 w-full">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-10 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {categoryDetails.map((cat) => {
             const Icon = cat.icon;
             return (
@@ -128,8 +127,8 @@ export default function ToolPage() {
                 onClick={() => handleCategoryClick(cat.name)}
                 className="flex flex-col items-center text-center p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-sm transition-all group cursor-pointer"
               >
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 border transition-all ${cat.color} group-hover:scale-105`}>
-                  <Icon className="w-4 h-4" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-all shrink-0">
+                  <Icon className="w-4.5 h-4.5" />
                 </div>
                 <h3 className="font-bold text-slate-800 dark:text-white text-[13px] leading-tight mb-0.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {cat.label}
@@ -148,14 +147,14 @@ export default function ToolPage() {
           <div className="flex-1 min-w-0 flex flex-col gap-8">
             
             {/* 1. Calculator Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-slate-900/10 transition-shadow">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-slate-900/5 transition-shadow">
               {/* Tool Header */}
-              <div className="px-6 py-8 border-b border-slate-100 dark:border-slate-850 bg-slate-50/50 dark:bg-slate-900/30">
+              <div className="px-6 py-6 border-b border-slate-250 dark:border-slate-800/65 bg-slate-50/50 dark:bg-slate-900/30">
                 <span className="inline-block px-2.5 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[11px] font-bold rounded uppercase tracking-wider mb-2">
                   {tool.category} Tool
                 </span>
-                <h1 className="text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-2">{tool.name}</h1>
-                <p className="text-slate-500 dark:text-slate-400 text-[15px]">{tool.benefit}</p>
+                <h1 className="text-2xl font-extrabold text-slate-955 dark:text-white tracking-tight mb-1">{tool.name}</h1>
+                <p className="text-slate-400 dark:text-slate-500 text-[14px]">{tool.benefit}</p>
               </div>
               
               {/* Tool Component Loader */}
@@ -164,7 +163,7 @@ export default function ToolPage() {
               </div>
             </div>
 
-            {/* 2. Details Section (Formula, Example, Common Values, FAQs, Related Tools) */}
+            {/* 2. Details Section */}
             {(tool.formulaText || tool.exampleText || tool.tableData || tool.faqs.length > 0 || relatedTools.length > 0) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
@@ -174,19 +173,18 @@ export default function ToolPage() {
                     <div>
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                         <Coins className="w-5 h-5 text-blue-500" />
-                        <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Formula</span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Formula</span>
                       </div>
                       
-                      {/* Stylized Math Formula if division/multiplication is present */}
                       {tool.formulaText.includes('÷') || tool.formulaText.includes('/') ? (
                         <div className="flex items-center gap-2.5 font-semibold text-lg text-slate-800 dark:text-slate-200 my-5">
                           <span className="text-[15px] text-slate-500 dark:text-slate-400">Formula:</span>
-                          <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-[14px] font-mono text-slate-700 dark:text-slate-350">
+                          <div className="bg-slate-50 dark:bg-slate-850 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-[14px] font-mono text-slate-700 dark:text-slate-350">
                             {tool.formulaText}
                           </div>
                         </div>
                       ) : (
-                        <div className="my-5 bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-100 dark:border-slate-800 font-mono text-slate-850 dark:text-slate-300 text-sm">
+                        <div className="my-5 bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-200 dark:border-slate-800 font-mono text-slate-850 dark:text-slate-300 text-sm">
                           {tool.formulaText}
                         </div>
                       )}
@@ -200,9 +198,9 @@ export default function ToolPage() {
                     <div>
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                         <BookOpen className="w-5 h-5 text-indigo-500" />
-                        <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Example</span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Example</span>
                       </div>
-                      <p className="text-[14.5px] text-slate-600 dark:text-slate-350 leading-relaxed font-medium">
+                      <p className="text-[14.5px] text-slate-605 dark:text-slate-350 leading-relaxed font-semibold">
                         {tool.exampleText}
                       </p>
                     </div>
@@ -214,17 +212,17 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <TrendingUp className="w-5 h-5 text-emerald-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Common Values</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Common Values</span>
                     </div>
-                    <div className="overflow-hidden border border-slate-100 dark:border-slate-800 rounded-xl">
+                    <div className="overflow-hidden border border-slate-200 dark:border-slate-800 rounded-xl">
                       <table className="w-full text-[14px]">
                         <thead>
-                          <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-100 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-left font-bold">
+                          <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-left font-bold">
                             <th className="px-4 py-2.5">{tool.tableData.headers[0]}</th>
                             <th className="px-4 py-2.5">{tool.tableData.headers[1]}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-850 text-slate-600 dark:text-slate-400 font-medium">
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-850 text-slate-650 dark:text-slate-400 font-medium">
                           {tool.tableData.rows.map((row, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/40 dark:hover:bg-slate-850/40 transition-colors">
                               <td className="px-4 py-2.5 text-slate-900 dark:text-white">{row.label}</td>
@@ -242,22 +240,22 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <HelpCircle className="w-5 h-5 text-amber-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">FAQ</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">FAQ</span>
                     </div>
                     <div className="space-y-2.5">
                       {tool.faqs.map((faq, idx) => {
                         const isOpen = openFaqs[idx];
                         return (
-                          <div key={idx} className="border border-slate-100 dark:border-slate-800/80 rounded-xl overflow-hidden">
+                          <div key={idx} className="border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden bg-white dark:bg-slate-900">
                             <button
                               onClick={() => toggleFaq(idx)}
-                              className="w-full flex items-center justify-between p-3.5 bg-slate-50/40 dark:bg-slate-900/20 text-left font-bold text-[13.5px] text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors cursor-pointer"
+                              className="w-full flex items-center justify-between p-3.5 bg-slate-50/60 dark:bg-slate-900/20 text-left font-bold text-[13.5px] text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors cursor-pointer"
                             >
                               <span>{faq.question}</span>
                               {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </button>
                             {isOpen && (
-                              <div className="p-3.5 bg-white dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-850">
+                              <div className="p-3.5 bg-white dark:bg-slate-900 text-xs text-slate-550 dark:text-slate-400 leading-relaxed border-t border-slate-200 dark:border-slate-800">
                                 {faq.answer}
                               </div>
                             )}
@@ -273,14 +271,14 @@ export default function ToolPage() {
                   <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-2">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <ArrowRightLeft className="w-5 h-5 text-purple-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Related Tools</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Related Tools</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {relatedTools.map((rt) => (
                         <Link
                           key={rt.slug}
                           to={`/${rt.slug}`}
-                          className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-sm transition-all group"
+                          className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-500 dark:hover:border-blue-550 hover:shadow-sm transition-all group"
                         >
                           <div className="min-w-0 pr-2">
                             <h4 className="font-bold text-slate-900 dark:text-white text-xs truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

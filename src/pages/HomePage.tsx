@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { getActiveTools, categories } from '../data/tools';
 import ToolCard from '../components/ToolCard';
 import PercentageCalculator from '../tools/implementations/PercentageCalculator';
@@ -19,17 +19,16 @@ import {
   BookOpen,
   HelpCircle,
   TrendingUp,
-  Percent,
   Coins
 } from 'lucide-react';
 
 const categoryDetails = [
-  { name: 'Business', label: 'Business Calculators', desc: 'Finance, loans, tax, investment & more', icon: Briefcase, color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30' },
-  { name: 'Unit Converter', label: 'Unit Converters', desc: 'Length, weight, area, volume & more', icon: ArrowRightLeft, color: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/20 border-sky-100 dark:border-sky-800/30' },
-  { name: 'Print & Paper', label: 'Paper & Print Tools', desc: 'A4, letter, margins, size converters', icon: FileText, color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30' },
-  { name: 'Text', label: 'Text Tools', desc: 'Case converter, word counter, formatter', icon: Type, color: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 border-purple-100 dark:border-purple-800/30' },
-  { name: 'Image & Media', label: 'Image Tools', desc: 'Resize, compress, converters & more', icon: ImageIcon, color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30' },
-  { name: 'Daily Use', label: 'Daily-use Tools', desc: 'Date, time, age, BMI, temperature & more', icon: Calendar, color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/30' }
+  { name: 'Business', label: 'Business Calculators', desc: 'Finance, loans, tax, investment & more', icon: Briefcase },
+  { name: 'Unit Converter', label: 'Unit Converters', desc: 'Length, weight, area, volume & more', icon: ArrowRightLeft },
+  { name: 'Print & Paper', label: 'Paper & Print Tools', desc: 'A4, letter, margins, size converters', icon: FileText },
+  { name: 'Text', label: 'Text Tools', desc: 'Case converter, word counter, formatter', icon: Type },
+  { name: 'Image & Media', label: 'Image Tools', desc: 'Resize, compress, converters & more', icon: ImageIcon },
+  { name: 'Daily Use', label: 'Daily-use Tools', desc: 'Date, time, age, BMI, temperature & more', icon: Calendar }
 ];
 
 export default function HomePage() {
@@ -41,7 +40,7 @@ export default function HomePage() {
   const setSearchQuery = (query: string) => {
     setSearchParams(query ? { q: query } : {});
   };
-  
+
   const filteredTools = searchQuery 
     ? tools.filter(t => 
         t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -76,46 +75,46 @@ export default function HomePage() {
     { question: 'What is percentage?', answer: 'A percentage is a number or ratio expressed as a fraction of 100. It is often denoted using the percent sign "%".' },
     { question: 'How to calculate percentage?', answer: 'To calculate percentage, divide the part by the whole and multiply by 100. Formula: Value = (Amount × Percentage) ÷ 100.' },
     { question: 'What is 15% of 500?', answer: '15% of 500 is calculated as (500 × 15) ÷ 100 = 75.' },
-    { question: 'Is the calculator free to use?', answer: 'Yes! Calculator Converter Tools are 100% free, run locally in your browser, and do not store or transmit your personal data.' }
+    { question: 'Is the calculator free to use?', answer: 'Yes! Calculator Converter Tools are 105% free, run locally in your browser, and do not store or transmit your personal data.' }
   ];
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col bg-[#f8fafc] dark:bg-slate-950 transition-colors">
       {/* Hero & Search Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-white to-slate-50 dark:from-slate-900/30 dark:via-slate-950 dark:to-slate-950 pt-16 pb-12 px-4 transition-colors">
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight leading-[1.15]">
-            Simple calculators and converters<br className="hidden md:inline" /> for daily work
+      <section className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 pt-16 pb-14 px-4 transition-colors">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight leading-[1.15]">
+            Simple calculators and converters for daily work
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto font-medium">
+          <p className="text-[17px] text-slate-500 dark:text-slate-400 mb-8 max-w-xl mx-auto">
             Fast, accurate and free tools to simplify your everyday tasks.
           </p>
           
-          {/* Styled Search Bar */}
+          {/* Styled Search Bar (No glowing shadow, clean blue button) */}
           <div className="relative max-w-2xl mx-auto mb-6">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
               <Search className="h-5 w-5" />
             </div>
-            <div className="relative flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all overflow-hidden">
+            <div className="relative flex items-center bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all overflow-hidden">
               <input
                 type="text"
-                className="block w-full pl-11 pr-28 py-4 bg-transparent outline-none text-[16px] text-slate-900 dark:text-white placeholder-slate-400"
+                className="block w-full pl-11 pr-28 py-3.5 bg-transparent outline-none text-[15px] text-slate-900 dark:text-white placeholder-slate-400"
                 placeholder="Search calculators and converters..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button 
                 onClick={() => handlePillClick(searchQuery)}
-                className="absolute right-2 top-2 bottom-2 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[14px] rounded-xl transition-colors cursor-pointer shadow-md shadow-blue-500/10"
+                className="absolute right-2 top-1.5 bottom-1.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[13.5px] rounded-lg transition-colors cursor-pointer shadow-sm border border-transparent"
               >
                 Search
               </button>
             </div>
           </div>
           
-          {/* Popular Search Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto text-sm">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">Popular searches:</span>
+          {/* Popular Search Pills (Clean outline pills) */}
+          <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto text-xs mt-4">
+            <span className="text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider text-[11px]">Popular searches:</span>
             {[
               { label: 'Percentage', query: 'Percentage' },
               { label: 'BMI', query: 'BMI' },
@@ -128,7 +127,7 @@ export default function HomePage() {
               <button
                 key={pill.label}
                 onClick={() => handlePillClick(pill.query)}
-                className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium rounded-full text-xs transition-colors cursor-pointer shadow-sm"
+                className="px-3.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-650 dark:text-slate-350 font-medium rounded-full transition-colors cursor-pointer shadow-sm"
               >
                 {pill.label}
               </button>
@@ -137,8 +136,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category Icons Overlays */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 mb-12 w-full">
+      {/* Category Cards (Flat styling, royal blue icons) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-12 w-full">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {categoryDetails.map((cat) => {
             const Icon = cat.icon;
@@ -146,9 +145,9 @@ export default function HomePage() {
               <button
                 key={cat.name}
                 onClick={() => handleCategoryClick(cat.name)}
-                className="flex flex-col items-center text-center p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md dark:hover:shadow-blue-900/10 transition-all group cursor-pointer"
+                className="flex flex-col items-center text-center p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-2xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-sm dark:hover:shadow-blue-900/5 transition-all group cursor-pointer"
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3.5 border transition-all ${cat.color} group-hover:scale-110`}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-all shrink-0">
                   <Icon className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-slate-800 dark:text-white text-[14px] leading-tight mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -206,18 +205,18 @@ export default function HomePage() {
               <div className="flex flex-col gap-8">
                 
                 {/* 1. Featured Calculator Panel */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-slate-900/10 transition-shadow">
-                  {/* Tool Header Header */}
-                  <div className="px-6 py-8 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30">
-                    <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-wider mb-2.5">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-md dark:hover:shadow-slate-900/5 transition-shadow">
+                  {/* Tool Header (Simple grey band) */}
+                  <div className="px-6 py-6 border-b border-slate-200 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30">
+                    <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-wider mb-2">
                       <Star className="w-4 h-4 fill-current" />
                       <span>Featured Calculator</span>
                     </div>
-                    <h2 className="text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight mb-2">Percentage Calculator</h2>
-                    <p className="text-slate-500 dark:text-slate-400 text-[15px]">Calculate percentage of a number.</p>
+                    <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-1">Percentage Calculator</h2>
+                    <p className="text-slate-400 dark:text-slate-500 text-[14px]">Calculate percentage of a number.</p>
                   </div>
                   {/* Active Tool Form Implementation */}
-                  <div className="p-6 sm:p-8">
+                  <div className="p-6 sm:p-8 bg-white dark:bg-slate-900">
                     <PercentageCalculator />
                   </div>
                 </div>
@@ -226,11 +225,11 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   
                   {/* Formula Card */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm transition-colors">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 flex flex-col justify-between shadow-sm transition-colors">
                     <div>
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                         <Coins className="w-5 h-5 text-blue-500" />
-                        <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Formula</span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Formula</span>
                       </div>
                       
                       {/* Styled Math Formula */}
@@ -243,18 +242,18 @@ export default function HomePage() {
                       </div>
                     </div>
                     
-                    <div className="text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-850 pt-4 space-y-1">
+                    <div className="text-xs text-slate-550 dark:text-slate-400 border-t border-slate-100 dark:border-slate-850 pt-4 space-y-1">
                       <p><span className="font-bold text-slate-700 dark:text-slate-350">Amount:</span> The total baseline amount.</p>
                       <p><span className="font-bold text-slate-700 dark:text-slate-350">Percentage:</span> The percentage value to calculate.</p>
                     </div>
                   </div>
 
                   {/* Example Card */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm transition-colors">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 flex flex-col justify-between shadow-sm transition-colors">
                     <div>
                       <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                         <BookOpen className="w-5 h-5 text-indigo-500" />
-                        <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Example</span>
+                        <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Example</span>
                       </div>
                       <h4 className="text-[14px] font-bold text-slate-900 dark:text-white mb-2">Find 15% of 500.</h4>
                       
@@ -269,26 +268,26 @@ export default function HomePage() {
                       </div>
                     </div>
                     
-                    <div className="text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-850 pt-4">
+                    <div className="text-xs text-slate-550 dark:text-slate-400 border-t border-slate-100 dark:border-slate-850 pt-4">
                       <p>For example, if you pay 15% service tax on a $500 dinner bill, the tax amount totals $75.</p>
                     </div>
                   </div>
 
                   {/* Common Values Table */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <TrendingUp className="w-5 h-5 text-emerald-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Common Values (Of 500)</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Common Values (Of 500)</span>
                     </div>
-                    <div className="overflow-hidden border border-slate-100 dark:border-slate-800 rounded-xl">
+                    <div className="overflow-hidden border border-slate-200 dark:border-slate-800 rounded-xl">
                       <table className="w-full text-[14px]">
                         <thead>
-                          <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-100 dark:border-slate-850 text-slate-800 dark:text-slate-200 text-left font-bold">
+                          <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-left font-bold">
                             <th className="px-4 py-2.5">Percentage</th>
                             <th className="px-4 py-2.5">Of 500</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-850 text-slate-600 dark:text-slate-400 font-medium">
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-650 dark:text-slate-400 font-medium">
                           {commonPercentageValues.map((row, idx) => (
                             <tr key={idx} className="hover:bg-slate-50/40 dark:hover:bg-slate-850/40 transition-colors">
                               <td className="px-4 py-2.5 text-slate-900 dark:text-white">{row.percent}</td>
@@ -307,25 +306,25 @@ export default function HomePage() {
                   </div>
 
                   {/* FAQ Accordion */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-1">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm transition-colors md:col-span-1">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <HelpCircle className="w-5 h-5 text-amber-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">FAQ</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">FAQ</span>
                     </div>
                     <div className="space-y-2.5">
                       {percentageFaqs.map((faq, idx) => {
                         const isOpen = openFaqs[idx];
                         return (
-                          <div key={idx} className="border border-slate-100 dark:border-slate-800/80 rounded-xl overflow-hidden">
+                          <div key={idx} className="border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden bg-white dark:bg-slate-900">
                             <button
                               onClick={() => toggleFaq(idx)}
-                              className="w-full flex items-center justify-between p-3.5 bg-slate-50/40 dark:bg-slate-900/20 text-left font-bold text-[13.5px] text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors cursor-pointer"
+                              className="w-full flex items-center justify-between p-3.5 bg-slate-50/60 dark:bg-slate-900/20 text-left font-bold text-[13.5px] text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors cursor-pointer"
                             >
                               <span>{faq.question}</span>
                               {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </button>
                             {isOpen && (
-                              <div className="p-3.5 bg-white dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-850">
+                              <div className="p-3.5 bg-white dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-400 leading-relaxed border-t border-slate-200 dark:border-slate-800">
                                 {faq.answer}
                               </div>
                             )}
@@ -342,10 +341,10 @@ export default function HomePage() {
                   </div>
 
                   {/* Related Tools Card */}
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm transition-colors md:col-span-2">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm transition-colors md:col-span-2">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 mb-4">
                       <ArrowRightLeft className="w-5 h-5 text-purple-500" />
-                      <span className="font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Related Tools</span>
+                      <span className="font-bold text-xs uppercase tracking-wider text-slate-550 dark:text-slate-400">Related Tools</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {[
@@ -357,7 +356,7 @@ export default function HomePage() {
                         <a
                           key={rt.slug}
                           href={`/${rt.slug}`}
-                          className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-xl hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-sm transition-all group"
+                          className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-500 dark:hover:border-blue-550 hover:shadow-sm transition-all group"
                         >
                           <div className="min-w-0 pr-2">
                             <h4 className="font-bold text-slate-900 dark:text-white text-xs truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
