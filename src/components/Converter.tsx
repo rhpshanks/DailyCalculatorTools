@@ -39,8 +39,102 @@ export default function Converter() {
   const [fromVal, setFromVal] = useState('1');
   const [toVal, setToVal] = useState('');
   const [precision, setPrecision] = useState<number | 'auto'>('auto');
+  const [calcMode, setCalcMode] = useState<'doc' | 'sheets' | 'kids'>('doc');
   const [activeInput, setActiveInput] = useState<'from' | 'to'>('from');
   const [steps, setSteps] = useState<string[]>([]);
+
+  const renderStepsByMode = () => {
+    if (!fromUnit || !toUnit) return [];
+    const val = parseFloat(fromVal) || 0;
+    
+    // For Document mode (standard steps)
+    if (calcMode === 'doc') {
+      return steps;
+    }
+    
+    // For Sheets mode (spreadsheet formulas)
+    if (calcMode === 'sheets') {
+      const localSteps = [];
+      localSteps.push(`Spreadsheet Formula (assumes input value is in cell A1):`);
+      
+      if (cat?.id === 'temperature') {
+        if (fromUnit.id === 'fahrenheit' && toUnit.id === 'celsius') {
+          localSteps.push(`=(A1 - 32) * 5/9`);
+        } else if (fromUnit.id === 'celsius' && toUnit.id === 'fahrenheit') {
+          localSteps.push(`=(A1 * 9/5) + 32`);
+        } else if (fromUnit.id === 'celsius' && toUnit.id === 'kelvin') {
+          localSteps.push(`=A1 + 273.15`);
+        } else if (fromUnit.id === 'kelvin' && toUnit.id === 'celsius') {
+          localSteps.push(`=A1 - 273.15`);
+        } else if (fromUnit.id === 'fahrenheit' && toUnit.id === 'kelvin') {
+          localSteps.push(`=(A1 - 32) * 5/9 + 273.15`);
+        } else if (fromUnit.id === 'kelvin' && toUnit.id === 'fahrenheit') {
+          localSteps.push(`=(A1 - 273.15) * 9/5 + 32`);
+        } else {
+          localSteps.push(`=CONVERT(A1, "${fromUnit.symbol}", "${toUnit.symbol}")`);
+        }
+      } else {
+        if (fromUnit.ratioToBase && toUnit.ratioToBase) {
+          const ratio = fromUnit.ratioToBase / toUnit.ratioToBase;
+          const ratioStr = ratio >= 1 || ratio < 0.0001 ? ratio.toString() : ratio.toFixed(6).replace(/\.?0+$/, '');
+          localSteps.push(`=A1 * ${ratioStr}`);
+        } else {
+          localSteps.push(`=CONVERT(A1, "${fromUnit.symbol}", "${toUnit.symbol}")`);
+        }
+      }
+      return localSteps;
+    }
+    
+    // For Kids mode (fun, emoji-rich explanation)
+    if (calcMode === 'kids') {
+      const localSteps = [];
+      localSteps.push(`Let's solve it together! 🌟`);
+      
+      if (fromUnit.id === toUnit.id) {
+        localSteps.push(`Look! Both units are ${fromUnit.name}. No math needed! 🎈`);
+        return localSteps;
+      }
+      
+      if (cat?.id === 'temperature') {
+        localSteps.push(`Thermometer Fun! 🌡️`);
+        if (fromUnit.id === 'fahrenheit' && toUnit.id === 'celsius') {
+          localSteps.push(`1. Take our Fahrenheit value: ${val}°F`);
+          localSteps.push(`2. Subtract 32 first: ${val} - 32 = ${val - 32}`);
+          localSteps.push(`3. Multiply by 5 and divide by 9: (${val - 32}) × 5 ÷ 9 = ${formatForStep((val - 32) * 5/9)}°C`);
+          localSteps.push(`Ta-da! That is ${formatForStep((val - 32) * 5/9)}°C! ❄️`);
+        } else if (fromUnit.id === 'celsius' && toUnit.id === 'fahrenheit') {
+          localSteps.push(`1. Take our Celsius value: ${val}°C`);
+          localSteps.push(`2. Multiply by 9 and divide by 5: ${val} × 9 ÷ 5 = ${val * 1.8}`);
+          localSteps.push(`3. Add 32: ${val * 1.8} + 32 = ${formatForStep((val * 1.8) + 32)}°F`);
+          localSteps.push(`Ta-da! That is ${formatForStep((val * 1.8) + 32)}°F! 🔥`);
+        } else {
+          const res = convert(val, fromUnit, toUnit);
+          localSteps.push(`We convert ${val} ${fromUnit.symbol} to get ${formatForStep(res)} ${toUnit.symbol}! ✨`);
+        }
+      } else {
+        if (fromUnit.ratioToBase && toUnit.ratioToBase) {
+          const ratio = fromUnit.ratioToBase / toUnit.ratioToBase;
+          const res = val * ratio;
+          if (ratio > 1) {
+            localSteps.push(`1. One ${fromUnit.name} is bigger! It fits ${ratio >= 1 || ratio < 0.0001 ? ratio.toString() : ratio.toFixed(6).replace(/\.?0+$/, '')} ${toUnit.name}s inside! 📦`);
+            localSteps.push(`2. So we multiply: ${val} × ${ratio >= 1 || ratio < 0.0001 ? ratio.toString() : ratio.toFixed(6).replace(/\.?0+$/, '')} = ${formatForStep(res)}`);
+            localSteps.push(`Wow! That gives us ${formatForStep(res)} ${toUnit.name}s! 🌈`);
+          } else {
+            const invRatio = 1 / ratio;
+            localSteps.push(`1. One ${toUnit.name} is bigger! It fits ${invRatio >= 1 || invRatio < 0.0001 ? invRatio.toString() : invRatio.toFixed(6).replace(/\.?0+$/, '')} ${fromUnit.name}s inside! 📦`);
+            localSteps.push(`2. So we divide: ${val} ÷ ${invRatio >= 1 || invRatio < 0.0001 ? invRatio.toString() : invRatio.toFixed(6).replace(/\.?0+$/, '')} = ${formatForStep(res)}`);
+            localSteps.push(`Wow! That gives us ${formatForStep(res)} ${toUnit.name}s! 🌈`);
+          }
+        } else {
+          const res = convert(val, fromUnit, toUnit);
+          localSteps.push(`We do magic math to get ${formatForStep(res)} ${toUnit.symbol}! ⚡`);
+        }
+      }
+      return localSteps;
+    }
+    
+    return [];
+  };
 
   // The actual conversion math
   const convert = (val: number, from: typeof fromUnit, to: typeof toUnit) => {
@@ -251,17 +345,32 @@ export default function Converter() {
         {/* Explanation Panel */}
         {steps.length > 0 && (typeof fromVal !== 'undefined' || typeof toVal !== 'undefined') && (fromVal !== '' || toVal !== '') && (
           <div className="border border-[var(--theme-border)] rounded overflow-hidden mb-6">
-            <div className="bg-[var(--theme-text-muted)] dark:bg-[#222233] px-4 py-2 flex justify-between items-center text-white">
+            <div className="bg-[var(--theme-text-muted)] dark:bg-[#222233] px-4 py-2 flex flex-col sm:flex-row justify-between sm:items-center text-white gap-3">
               <h3 className="font-bold text-sm">Calculation</h3>
+              <div className="flex gap-1.5 text-xs">
+                {(['doc', 'sheets', 'kids'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setCalcMode(mode)}
+                    className={`px-2.5 py-1 rounded transition-colors font-semibold ${
+                      calcMode === mode 
+                        ? 'bg-[var(--theme-primary)] text-white' 
+                        : 'bg-black/20 text-white/85 hover:bg-black/30'
+                    }`}
+                  >
+                    {mode === 'doc' ? 'For Document' : mode === 'sheets' ? 'For Sheets' : 'For Kids'}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="bg-[#fcfcfc] dark:bg-[var(--theme-bg-panel)] p-4 relative" aria-live="polite">
-              <div className="space-y-2 font-mono text-sm text-[var(--theme-text-base)]">
-                {steps.map((step, idx) => (
+              <div className="space-y-2 font-mono text-sm text-[var(--theme-text-base)] pr-10">
+                {renderStepsByMode().map((step, idx) => (
                   <div key={idx}>{step}</div>
                 ))}
               </div>
               <button 
-                onClick={() => navigator.clipboard.writeText(steps.join('\n'))}
+                onClick={() => navigator.clipboard.writeText(renderStepsByMode().join('\n'))}
                 className="absolute bottom-4 right-4 text-[var(--theme-text-muted)] hover:text-[var(--theme-primary)] mb-0"
                 title="Copy Steps"
               >
