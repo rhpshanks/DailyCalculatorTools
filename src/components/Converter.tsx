@@ -198,7 +198,7 @@ export default function Converter() {
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end mb-6">
           <div className="flex flex-col gap-2 min-w-0">
-            <label className="text-sm font-semibold text-[var(--theme-text-base)]">From:</label>
+            <label className="text-sm font-semibold text-[var(--theme-text-base)]">Input:</label>
             <div className="flex bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded overflow-hidden focus-within:ring-2 focus-within:ring-[var(--theme-primary)]">
               <input 
                 type="number"
@@ -227,7 +227,7 @@ export default function Converter() {
           </button>
 
           <div className="flex flex-col gap-2 min-w-0">
-            <label className="text-sm font-semibold text-[var(--theme-text-base)]">To:</label>
+            <label className="text-sm font-semibold text-[var(--theme-text-base)]">Output:</label>
             <div className="flex bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded overflow-hidden focus-within:ring-2 focus-within:ring-[var(--theme-primary)]">
               <input 
                 type="number"
