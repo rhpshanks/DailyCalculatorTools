@@ -24,6 +24,49 @@ function parseConvertParams(slug: string) {
   return { catId: '', fromId: '', toId: '' };
 }
 
+const UNIT_DEFINITIONS: Record<string, string> = {
+  m: "The fundamental unit of length in the International System of Units (SI), defined by the distance light travels in a vacuum in 1/299,792,458 of a second.",
+  cm: "A metric unit of length, equal to one-hundredth of a meter (10^-2 m). Commonly used for measuring everyday items.",
+  mm: "A metric unit of length, equal to one-thousandth of a meter (10^-3 m). Used for precise measurements of small hardware or components.",
+  km: "A metric unit of length, equal to one thousand meters (10^3 m). Primarily used to express travel distances between geographical places.",
+  in: "An imperial and US customary unit of length, defined as exactly 25.4 millimeters. Historically based on the width of a human thumb.",
+  ft: "An imperial and US customary unit of length, equal to 12 inches or 0.3048 meters. Originally modeled after the length of an average human foot.",
+  yd: "An imperial unit of length, equal to 3 feet or 36 inches (exactly 0.9144 meters). Commonly used in athletic fields and textiles.",
+  mi: "A US customary and imperial unit of length, equal to 5,280 feet or 1,760 yards (exactly 1.609344 kilometers). Used for land distances.",
+  nmi: "A nautical mile, a unit of length used in navigation, defined as exactly 1,852 meters. It corresponds to one minute of arc of latitude.",
+  ly: "A light-year, the astronomical unit of length defined as the distance that light travels in a vacuum in one Julian year (approx. 9.46 trillion kilometers).",
+  pc: "A parsec, an astronomical unit of length used to measure large distances outside the Solar System, equal to about 3.26 light-years.",
+  kg: "The base unit of mass in the International System of Units (SI), defined by taking the fixed numerical value of the Planck constant h to be 6.62607015×10^-34 J s.",
+  g: "A metric unit of mass, equal to one-thousandth of a kilogram (10^-3 kg). Commonly used to weigh foods and light items.",
+  mg: "A metric unit of mass, equal to one-millionth of a kilogram (10^-6 kg). Primarily used for pharmaceutical ingredients and scientific research.",
+  t: "A metric ton (tonne), equal to 1,000 kilograms. Used to weigh extremely heavy loads like vehicles, steel, and agricultural harvests.",
+  lb: "An imperial and US customary unit of weight (mass), defined as exactly 0.45359237 kilograms. Widely used in the US.",
+  oz: "An imperial and US customary unit of weight, equal to 1/16 of a pound (approx. 28.35 grams). Commonly used for packaging.",
+  st: "A stone, an imperial unit of mass equal to 14 pounds (exactly 6.35029318 kilograms). Used to express human body weight.",
+  celsius: "A scale and unit of measurement for temperature, where water freezes at 0°C and boils at 100°C under standard atmospheric conditions.",
+  fahrenheit: "A temperature scale widely used in the US, where water freezes at 32°F and boils at 212°F.",
+  kelvin: "The primary thermodynamic unit of temperature, starting at absolute zero (0 K, where molecular motion stops).",
+  rankine: "An absolute temperature scale named after William Rankine, using Fahrenheit increments, where absolute zero is 0°R.",
+  l: "A metric unit of volume, equal to 1 cubic decimeter (dm³), 1,000 cubic centimeters, or 0.264 US gallons.",
+  ml: "A metric unit of volume, equal to one-thousandth of a liter (10^-3 L) or 1 cubic centimeter.",
+  m3: "A cubic meter, the SI derived unit of volume, equal to the volume of a cube with edges of one meter.",
+  "gal-us": "A US gallon, a customary unit of fluid volume equal to 231 cubic inches or exactly 3.785411784 liters.",
+  "floz-us": "A US fluid ounce, a customary unit of volume equal to 1/128 of a US gallon (approx. 29.57 milliliters)."
+};
+
+const getUnitDefinition = (unit: any, categoryName: string, baseUnit: any) => {
+  if (UNIT_DEFINITIONS[unit.id]) {
+    return UNIT_DEFINITIONS[unit.id];
+  }
+  if (unit.ratioToBase === 1 || unit.id === baseUnit?.id) {
+    return `The <strong>${unit.name} (${unit.symbol})</strong> is the base unit used for measuring ${categoryName.toLowerCase()} in this converter.`;
+  }
+  if (unit.ratioToBase) {
+    return `The <strong>${unit.name} (${unit.symbol})</strong> is a unit of ${categoryName.toLowerCase()} equal to ${unit.ratioToBase} ${baseUnit?.name || 'base units'}.`;
+  }
+  return `The <strong>${unit.name} (${unit.symbol})</strong> is a standardized unit of measurement in the ${categoryName.toLowerCase()} category.`;
+};
+
 export default function Converter() {
   const { slug } = useParams();
   const { catId, fromId, toId } = parseConvertParams(slug || '');
@@ -286,6 +329,117 @@ export default function Converter() {
     setTimeout(() => setCopiedSteps(false), 2000);
   };
 
+  const renderElaborativeContent = () => {
+    if (!fromUnit || !toUnit) return null;
+    
+    if (calcMode === 'doc') {
+      return (
+        <div className="space-y-3 text-sm text-[var(--theme-text-muted)] leading-relaxed">
+          <p>
+            <strong>How this Conversion Works (Dimensional Analysis):</strong>
+          </p>
+          <p>
+            In professional documentation, academic research, and homework sheets, unit conversions are performed using <em>dimensional analysis</em> (also known as the factor-label method). 
+            This method multiplies the starting quantity by a conversion fraction equal to 1. Since the numerator and denominator represent the same physical quantity in different units, the value remains unchanged while the labels convert.
+          </p>
+          <p>
+            For example, to convert from <strong>{fromUnit.name} ({fromUnit.symbol})</strong> to <strong>{toUnit.name} ({toUnit.symbol})</strong>, we identify the exact mathematical relation between them:
+          </p>
+          <div className="bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded p-3 font-mono text-center text-[var(--theme-text-base)] text-sm">
+            {fromUnit.ratioToBase && toUnit.ratioToBase ? (
+              <>
+                1 {fromUnit.symbol} = {(fromUnit.ratioToBase / toUnit.ratioToBase).toFixed(6).replace(/\.?0+$/, '')} {toUnit.symbol}
+              </>
+            ) : (
+              <>
+                Refer to formula: {fromUnit.name} → {toUnit.name}
+              </>
+            )}
+          </div>
+          <p>
+            When writing these steps in reports or worksheets, always round the final result to the appropriate number of significant figures (precision) relevant to your measured source values to preserve precision integrity.
+          </p>
+        </div>
+      );
+    }
+    
+    if (calcMode === 'sheets') {
+      return (
+        <div className="space-y-3 text-sm text-[var(--theme-text-muted)] leading-relaxed">
+          <p>
+            <strong>How to use this formula in Microsoft Excel or Google Sheets:</strong>
+          </p>
+          <p>
+            Spreadsheets make converting a large list of values incredibly quick and automated. Follow these simple steps:
+          </p>
+          <ol className="list-decimal pl-5 space-y-1.5">
+            <li>
+              Enter the source value in cell <strong>A1</strong> (or any column, e.g., cell <code>B2</code>).
+            </li>
+            <li>
+              Select the adjacent cell (e.g., cell <code>B1</code>) and paste the formula provided in the box above.
+            </li>
+            <li>
+              Press <code>Enter</code> to see the computed conversion.
+            </li>
+            <li>
+              <strong>Drag to Apply:</strong> Click and hover over the bottom-right corner of the cell containing your formula until the cursor changes to a small black plus sign (<code>+</code>). Click and drag the corner down to copy the formula to other rows (e.g., <code>A2</code>, <code>A3</code>, etc.) automatically.
+            </li>
+          </ol>
+          <p>
+            <em>Pro Tip:</em> If you are using standard units, you can also use Google Sheets' and Excel's built-in <code>CONVERT</code> function. For example: <code>=CONVERT(A1, "{fromUnit.symbol}", "{toUnit.symbol}")</code>.
+          </p>
+        </div>
+      );
+    }
+    
+    if (calcMode === 'kids') {
+      return (
+        <div className="space-y-3 text-sm text-[var(--theme-text-muted)] leading-relaxed">
+          <p>
+            <strong>✨ Fun Learning Corner! 🌈</strong>
+          </p>
+          <p>
+            Have you ever wondered how big or heavy these units really are? Let's look at some super fun everyday clues:
+          </p>
+          <ul className="list-disc pl-5 space-y-1.5">
+            {catId === 'length' && (
+              <>
+                <li>📏 <strong>Millimeters (mm)</strong> are tiny! The thickness of a plastic library card is about 1 mm.</li>
+                <li>🐜 <strong>Centimeters (cm)</strong> are small. A ladybug is about 1 cm long, and a standard paperclip is about 3 cm!</li>
+                <li>🚶 <strong>Meters (m)</strong> are about the size of a big step you take while walking. A standard doorway is about 2 meters tall!</li>
+                <li>🚗 <strong>Kilometers (km)</strong> are for long trips. Walking 1 kilometer takes about 10 to 12 minutes.</li>
+              </>
+            )}
+            {catId === 'weight' && (
+              <>
+                <li>🧂 <strong>Milligrams (mg)</strong> are super light. A single grain of table salt is about 1 mg!</li>
+                <li>📎 <strong>Grams (g)</strong> are light. A single metal paperclip weighs exactly 1 gram!</li>
+                <li>🎒 <strong>Kilograms (kg)</strong> are for things you carry. A big bottle of soda or a heavy schoolbook weighs about 1 kg.</li>
+                <li>🐘 <strong>Tonnes (t)</strong> are massive! A small elephant weighs about 2 to 3 tonnes!</li>
+              </>
+            )}
+            {catId === 'temperature' && (
+              <>
+                <li>🥶 <strong>0°C (32°F)</strong> is the temperature where water freezes into ice. Time for a warm jacket!</li>
+                <li>🌡️ <strong>20°C (68°F)</strong> is a comfortable indoor room temperature—perfect for playing games!</li>
+                <li>🔥 <strong>37°C (98.6°F)</strong> is the normal temperature of the human body.</li>
+                <li>🍵 <strong>100°C (212°F)</strong> is super hot! Water boils at this temperature, making lots of steam.</li>
+              </>
+            )}
+            {!['length', 'weight', 'temperature'].includes(catId || '') && (
+              <li>💡 Units help us compare things around the world! Just like counting toys, converting units helps us speak the same math language so we can build buildings, bake cookies, and fly spaceships safely together! 🚀</li>
+            )}
+          </ul>
+          <p>
+            Remember, unit conversions are like translating languages—but instead of translating words, we are translating size and numbers! 🧠🎒
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (!cat) {
     return <div className="p-8 text-center text-[var(--theme-text-muted)]">Please select a valid calculator from the menu.</div>;
   }
@@ -387,6 +541,36 @@ export default function Converter() {
                 {copiedSteps ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Definition and Elaboration Blocks */}
+        {steps.length > 0 && (fromVal !== '' || toVal !== '') && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-[var(--theme-border)]">
+             {/* Definitions Column */}
+             <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-lg text-[var(--theme-primary)]">Unit Definitions</h3>
+                <div className="space-y-4">
+                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
+                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{fromUnit.name} ({fromUnit.symbol})</h4>
+                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(fromUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
+                   </div>
+                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
+                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{toUnit.name} ({toUnit.symbol})</h4>
+                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(toUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Elaborative Context Column */}
+             <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-lg text-[var(--theme-primary)]">
+                   {calcMode === 'doc' ? 'Document Elaboration' : calcMode === 'sheets' ? 'Spreadsheet Elaboration' : 'Kid-Friendly Explanation'}
+                </h3>
+                <div className="p-5 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded h-full">
+                   {renderElaborativeContent()}
+                </div>
+             </div>
           </div>
         )}
 
