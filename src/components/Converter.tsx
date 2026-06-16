@@ -389,7 +389,7 @@ export default function Converter() {
           </button>
           <button 
             onClick={handleCopy}
-            className="px-6 py-2 bg-[#f0f0f0] hover:bg-[#e0e0e0] dark:bg-[#2A2A3E] dark:hover:bg-[#3A3A4E] text-[var(--theme-text-base)] font-bold rounded transition-colors flex items-center gap-2"
+            className="px-6 py-2 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold rounded transition-colors flex items-center gap-2"
           >
             <Copy size={16} /> Copy
           </button>
