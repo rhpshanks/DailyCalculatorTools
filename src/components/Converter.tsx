@@ -3,8 +3,30 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftRight, Copy, RotateCcw } from 'lucide-react';
 import { unitGroups, getAllCategories } from '../utils/conversions';
 
+function parseConvertParams(slug: string) {
+  if (!slug) return { catId: '', fromId: '', toId: '' };
+  
+  const parts = slug.split('-to-');
+  if (parts.length !== 2) return { catId: '', fromId: '', toId: '' };
+  
+  const part1 = parts[0];
+  const toId = parts[1];
+  
+  const categories = getAllCategories();
+  const matchedCat = categories.find(c => part1.startsWith(c.id + '-'));
+  
+  if (matchedCat) {
+    const catId = matchedCat.id;
+    const fromId = part1.substring(catId.length + 1);
+    return { catId, fromId, toId };
+  }
+  
+  return { catId: '', fromId: '', toId: '' };
+}
+
 export default function Converter() {
-  const { catId, fromId, toId } = useParams();
+  const { slug } = useParams();
+  const { catId, fromId, toId } = parseConvertParams(slug || '');
   const navigate = useNavigate();
 
   const categories = getAllCategories();

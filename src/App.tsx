@@ -20,7 +20,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Navigate to="/convert/length-m-to-cm" replace />} />
                   <Route path="/calculator" element={<Calculator />} />
-                  <Route path="/convert/:catId-:fromId-to-:toId" element={<Converter />} />
+                  <Route path="/convert/:slug" element={<Converter />} />
                   <Route path="*" element={<Navigate to="/convert/length-m-to-cm" replace />} />
                 </Routes>
               </main>
