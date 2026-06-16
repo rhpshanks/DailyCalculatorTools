@@ -1,4 +1,4 @@
-import { Moon, Sun, Eye, Bug, Lightbulb, ArrowLeftRight } from 'lucide-react';
+import { Moon, Sun, Eye, Bug, Lightbulb } from 'lucide-react';
 import { useTheme } from '../utils/themeContext';
 import { Link } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ export default function NavBar() {
   return (
     <nav className="w-full bg-[var(--theme-primary)] text-white px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
       <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <ArrowLeftRight size={24} />
+        <img src="/icon.png" className="w-7 h-7 object-contain rounded" alt="Logo" />
         <span className="text-xl font-bold tracking-tight">Daily Calculator Tools</span>
       </Link>
       
