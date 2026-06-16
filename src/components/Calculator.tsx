@@ -25,6 +25,47 @@ export default function Calculator() {
     }
   }, [expression]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      const key = e.key;
+      if (/[0-9]/.test(key)) {
+        handleChar(key);
+      } else if (key === '.') {
+        handleChar('.');
+      } else if (key === '+') {
+        handleChar('+');
+      } else if (key === '-') {
+        handleChar('-');
+      } else if (key === '*') {
+        handleChar('*');
+      } else if (key === '/') {
+        handleChar('/');
+      } else if (key === '^') {
+        handleChar('^');
+      } else if (key === '(') {
+        handleChar('(');
+      } else if (key === ')') {
+        handleChar(')');
+      } else if (key === '%') {
+        handleChar('%');
+      } else if (key === 'Enter' || key === '=') {
+        e.preventDefault();
+        calculate();
+      } else if (key === 'Backspace') {
+        backspace();
+      } else if (key === 'Escape' || key === 'Delete') {
+        clear();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [expression]);
+
   const handleChar = (char: string) => {
     setExpression(prev => prev + char);
   };
@@ -58,83 +99,132 @@ export default function Calculator() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // User-friendly formatting helper for display rendering
+  const formatExpressionForDisplay = (expr: string) => {
+    if (!expr) return '';
+    return expr
+      .replace(/\*/g, ' × ')
+      .replace(/\//g, ' ÷ ')
+      .replace(/\+/g, ' + ')
+      .replace(/-/g, ' − ')
+      .replace(/pi/g, 'π')
+      .replace(/sqrt\(/g, '√(')
+      .replace(/floor\(/g, 'flr(')
+      .replace(/ceil\(/g, 'ceil(')
+      .replace(/abs\(/g, '|(')
+      .replace(/log10\(/g, 'log(')
+      .replace(/log\(/g, 'ln(');
+  };
+
   return (
-    <div className="flex flex-col bg-[var(--theme-bg-panel)] rounded shadow-sm border border-[var(--theme-border)] overflow-hidden">
-      <div className="p-6 bg-[var(--theme-bg-page)] border-b border-[var(--theme-border)] text-right">
-        <div className="flex justify-between items-start mb-2">
-           <button onClick={copyToClipboard} className="text-[var(--theme-text-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded hover:bg-black/5" title="Copy expression/result">
-             {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
-           </button>
-           <div className="text-xl text-[var(--theme-text-muted)] min-h-[30px] overflow-hidden break-all">{expression}</div>
+    <div className="flex flex-col gap-6">
+      <div className="bg-[var(--theme-bg-panel)] rounded shadow-sm border border-[var(--theme-border)] p-6">
+        <h1 className="text-3xl font-bold text-[var(--theme-primary)] mb-2">
+          Scientific Calculator
+        </h1>
+        <p className="text-[var(--theme-text-muted)] mb-6">
+          Use the advanced scientific calculator below for expressions, trigonometric operations, and general calculations.
+        </p>
+
+        <div className="w-full max-w-2xl mx-auto flex flex-col bg-[var(--theme-bg-panel)] rounded-xl shadow-lg border border-[var(--theme-border)] overflow-hidden">
+          {/* LCD Screen Display */}
+          <div className="p-6 bg-zinc-900 dark:bg-zinc-950 border-b border-zinc-800 text-right text-white">
+            <div className="flex justify-between items-start mb-2">
+               <button 
+                 onClick={copyToClipboard} 
+                 className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10" 
+                 title="Copy expression/result"
+               >
+                 {copied ? (
+                   <>
+                     <Check size={16} className="text-green-400" />
+                     <span className="text-xs text-green-400 font-semibold">Copied!</span>
+                   </>
+                 ) : (
+                   <Copy size={16} />
+                 )}
+               </button>
+               <div className="text-lg font-mono text-zinc-400 min-h-[30px] overflow-hidden break-all">
+                 {formatExpressionForDisplay(expression)}
+               </div>
+            </div>
+            <div className="text-4xl font-mono text-white min-h-[48px] overflow-hidden break-all font-bold">
+              {formatExpressionForDisplay(result) || formatExpressionForDisplay(expression) || '0'}
+            </div>
+          </div>
+
+          {/* Grid Layout of Keys (6-Column layout for absolute alignment) */}
+          <div className="grid grid-cols-6 gap-[1.5px] bg-zinc-200 dark:bg-zinc-800 p-[1.5px]">
+            {/* Row 1 */}
+            <CalcBtn onClick={() => handleChar('sin(')}>sin</CalcBtn>
+            <CalcBtn onClick={() => handleChar('asin(')}>asin</CalcBtn>
+            <CalcBtn onClick={clear} className="text-red-600 dark:text-red-400 font-bold bg-[#f1f3f5] dark:bg-[#2A2A3E] hover:bg-red-50 dark:hover:bg-red-950/20">AC</CalcBtn>
+            <CalcBtn onClick={backspace} className="text-orange-600 dark:text-orange-400 bg-[#f1f3f5] dark:bg-[#2A2A3E] hover:bg-orange-50 dark:hover:bg-orange-950/20">
+              <Delete size={18} className="mx-auto"/>
+            </CalcBtn>
+            <CalcBtn onClick={() => handleChar('(')}>(</CalcBtn>
+            <CalcBtn onClick={() => handleChar(')')}>)</CalcBtn>
+
+            {/* Row 2 */}
+            <CalcBtn onClick={() => handleChar('cos(')}>cos</CalcBtn>
+            <CalcBtn onClick={() => handleChar('acos(')}>acos</CalcBtn>
+            <CalcBtn onClick={() => handleChar('log10(')}>log</CalcBtn>
+            <CalcBtn onClick={() => handleChar('log(')}>ln</CalcBtn>
+            <CalcBtn onClick={() => handleChar('!')}>n!</CalcBtn>
+            <CalcBtn onClick={() => handleChar('%')}>%</CalcBtn>
+
+            {/* Row 3 */}
+            <CalcBtn onClick={() => handleChar('tan(')}>tan</CalcBtn>
+            <CalcBtn onClick={() => handleChar('atan(')}>atan</CalcBtn>
+            <CalcBtn onClick={() => handleChar('7')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">7</CalcBtn>
+            <CalcBtn onClick={() => handleChar('8')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">8</CalcBtn>
+            <CalcBtn onClick={() => handleChar('9')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">9</CalcBtn>
+            <CalcBtn onClick={() => handleChar('/')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">÷</CalcBtn>
+
+            {/* Row 4 */}
+            <CalcBtn onClick={() => handleChar('^')}>x^y</CalcBtn>
+            <CalcBtn onClick={() => handleChar('^2')}>x²</CalcBtn>
+            <CalcBtn onClick={() => handleChar('4')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">4</CalcBtn>
+            <CalcBtn onClick={() => handleChar('5')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">5</CalcBtn>
+            <CalcBtn onClick={() => handleChar('6')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">6</CalcBtn>
+            <CalcBtn onClick={() => handleChar('*')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">×</CalcBtn>
+
+            {/* Row 5 */}
+            <CalcBtn onClick={() => handleChar('sqrt(')}>√</CalcBtn>
+            <CalcBtn onClick={() => handleChar('pi')}>π</CalcBtn>
+            <CalcBtn onClick={() => handleChar('1')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">1</CalcBtn>
+            <CalcBtn onClick={() => handleChar('2')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">2</CalcBtn>
+            <CalcBtn onClick={() => handleChar('3')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">3</CalcBtn>
+            <CalcBtn onClick={() => handleChar('-')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">−</CalcBtn>
+
+            {/* Row 6 */}
+            <CalcBtn onClick={() => handleChar('abs(')}>|x|</CalcBtn>
+            <CalcBtn onClick={() => handleChar('e')}>e</CalcBtn>
+            <CalcBtn onClick={() => handleChar('0')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800 !col-span-2">0</CalcBtn>
+            <CalcBtn onClick={() => handleChar('.')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">.</CalcBtn>
+            <CalcBtn onClick={() => handleChar('+')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">+</CalcBtn>
+
+            {/* Row 7 */}
+            <CalcBtn onClick={() => handleChar('floor(')}>flr</CalcBtn>
+            <CalcBtn onClick={() => handleChar('ceil(')}>ceil</CalcBtn>
+            <CalcBtn onClick={calculate} className="!bg-[var(--theme-primary-dark)] text-white font-bold text-xl hover:opacity-90 transition-opacity !col-span-4">=</CalcBtn>
+          </div>
         </div>
-        <div className="text-4xl font-mono text-[var(--theme-text-base)] min-h-[48px] overflow-hidden break-all font-bold">
-          {result || expression || '0'}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-5 gap-[1px] bg-[var(--theme-border)] p-[1px]">
-        {/* Row 1 */}
-        <CalcBtn onClick={() => handleChar('sin(')}>sin</CalcBtn>
-        <CalcBtn onClick={() => handleChar('cos(')}>cos</CalcBtn>
-        <CalcBtn onClick={() => handleChar('tan(')}>tan</CalcBtn>
-        <CalcBtn onClick={clear} className="text-red-500 font-bold bg-[#f1f3f5] dark:bg-[#2A2A3E]">AC</CalcBtn>
-        <CalcBtn onClick={backspace} className="text-orange-500 bg-[#f1f3f5] dark:bg-[#2A2A3E]"><Delete size={20} className="mx-auto"/></CalcBtn>
-
-        {/* Row 2 */}
-        <CalcBtn onClick={() => handleChar('asin(')}>asin</CalcBtn>
-        <CalcBtn onClick={() => handleChar('acos(')}>acos</CalcBtn>
-        <CalcBtn onClick={() => handleChar('atan(')}>atan</CalcBtn>
-        <CalcBtn onClick={() => handleChar('(')}>(</CalcBtn>
-        <CalcBtn onClick={() => handleChar(')')}>)</CalcBtn>
-
-        {/* Row 3 */}
-        <CalcBtn onClick={() => handleChar('log10(')}>log</CalcBtn>
-        <CalcBtn onClick={() => handleChar('log(')}>ln</CalcBtn>
-        <CalcBtn onClick={() => handleChar('!')}>n!</CalcBtn>
-        <CalcBtn onClick={() => handleChar('%')}>%</CalcBtn>
-        <CalcBtn onClick={() => handleChar('/')} className="bg-[#e9ecef] dark:bg-[#2A2A3E] text-[var(--theme-primary)] font-bold">÷</CalcBtn>
-
-        {/* Row 4 */}
-        <CalcBtn onClick={() => handleChar('^')}>x^y</CalcBtn>
-        <CalcBtn onClick={() => handleChar('^2')}>x²</CalcBtn>
-        <CalcBtn onClick={() => handleChar('7')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">7</CalcBtn>
-        <CalcBtn onClick={() => handleChar('8')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">8</CalcBtn>
-        <CalcBtn onClick={() => handleChar('9')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">9</CalcBtn>
-        <CalcBtn onClick={() => handleChar('*')} className="bg-[#e9ecef] dark:bg-[#2A2A3E] text-[var(--theme-primary)] font-bold">×</CalcBtn>
-
-        {/* Row 5 */}
-        <CalcBtn onClick={() => handleChar('sqrt(')}>√</CalcBtn>
-        <CalcBtn onClick={() => handleChar('pi')}>π</CalcBtn>
-        <CalcBtn onClick={() => handleChar('4')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">4</CalcBtn>
-        <CalcBtn onClick={() => handleChar('5')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">5</CalcBtn>
-        <CalcBtn onClick={() => handleChar('6')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">6</CalcBtn>
-        <CalcBtn onClick={() => handleChar('-')} className="bg-[#e9ecef] dark:bg-[#2A2A3E] text-[var(--theme-primary)] font-bold">−</CalcBtn>
-
-        {/* Row 6 */}
-        <CalcBtn onClick={() => handleChar('abs(')}>|x|</CalcBtn>
-        <CalcBtn onClick={() => handleChar('e')}>e</CalcBtn>
-        <CalcBtn onClick={() => handleChar('1')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">1</CalcBtn>
-        <CalcBtn onClick={() => handleChar('2')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">2</CalcBtn>
-        <CalcBtn onClick={() => handleChar('3')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">3</CalcBtn>
-        <CalcBtn onClick={() => handleChar('+')} className="bg-[#e9ecef] dark:bg-[#2A2A3E] text-[var(--theme-primary)] font-bold">+</CalcBtn>
-
-        {/* Row 7 */}
-        <CalcBtn onClick={() => handleChar('floor(')}>flr</CalcBtn>
-        <CalcBtn onClick={() => handleChar('ceil(')}>ceil</CalcBtn>
-        <CalcBtn className="bg-white dark:bg-[#1f2937] font-semibold text-lg hidden"> </CalcBtn>
-        <CalcBtn onClick={() => handleChar('0')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg !col-span-2">0</CalcBtn>
-        <CalcBtn onClick={() => handleChar('.')} className="bg-white dark:bg-[#1f2937] font-semibold text-lg">.</CalcBtn>
-        <CalcBtn onClick={calculate} className="!bg-[var(--theme-primary)] text-white font-bold text-xl hover:!opacity-90">=</CalcBtn>
       </div>
 
       {history.length > 0 && (
-        <div className="p-4 bg-[var(--theme-bg-page)] border-t border-[var(--theme-border)]">
-          <h4 className="text-xs font-bold text-[var(--theme-text-muted)] uppercase tracking-wider mb-2">History</h4>
-          <ul className="space-y-1 text-sm">
+        <div className="bg-[var(--theme-bg-panel)] rounded shadow-sm border border-[var(--theme-border)] p-6">
+          <h4 className="text-lg font-bold text-[var(--theme-text-base)] mb-3">Calculation History</h4>
+          <ul className="divide-y divide-[var(--theme-border)] border border-[var(--theme-border)] rounded-md overflow-hidden bg-[var(--theme-bg-page)] text-sm">
             {history.map((h, i) => (
-              <li key={i} className="flex justify-between items-center py-1 border-b border-[var(--theme-border)] last:border-0 cursor-pointer hover:bg-black/5 px-2 rounded" onClick={() => setExpression(h.res)}>
-                <span className="text-[var(--theme-text-muted)]">{h.expr} =</span>
-                <span className="font-mono text-[var(--theme-text-base)]">{h.res}</span>
+              <li 
+                key={i} 
+                className="flex justify-between items-center py-3 px-4 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                onClick={() => setExpression(h.res)}
+                title="Click to load result into calculator"
+              >
+                <span className="text-[var(--theme-text-muted)] font-mono">{formatExpressionForDisplay(h.expr)} =</span>
+                <span className="font-mono font-bold text-[var(--theme-primary)]">{h.res}</span>
               </li>
             ))}
           </ul>
