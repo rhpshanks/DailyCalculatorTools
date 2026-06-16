@@ -543,38 +543,7 @@ export default function Converter() {
             </div>
           </div>
         )}
-
-        {/* Definition and Elaboration Blocks */}
-        {steps.length > 0 && (fromVal !== '' || toVal !== '') && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-[var(--theme-border)]">
-             {/* Definitions Column */}
-             <div className="flex flex-col gap-4">
-                <h3 className="font-bold text-lg text-[var(--theme-primary)]">Unit Definitions</h3>
-                <div className="space-y-4">
-                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
-                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{fromUnit.name} ({fromUnit.symbol})</h4>
-                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(fromUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
-                   </div>
-                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
-                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{toUnit.name} ({toUnit.symbol})</h4>
-                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(toUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
-                   </div>
-                </div>
-             </div>
-
-             {/* Elaborative Context Column */}
-             <div className="flex flex-col gap-4">
-                <h3 className="font-bold text-lg text-[var(--theme-primary)]">
-                   {calcMode === 'doc' ? 'Document Elaboration' : calcMode === 'sheets' ? 'Spreadsheet Elaboration' : 'Kid-Friendly Explanation'}
-                </h3>
-                <div className="p-5 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded h-full">
-                   {renderElaborativeContent()}
-                </div>
-             </div>
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex flex-wrap gap-3 items-center mb-6">
           <button 
             onClick={() => { setActiveInput('from'); setFromVal(fromVal); }}
             className="px-6 py-2 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold rounded transition-colors"
@@ -602,6 +571,36 @@ export default function Converter() {
             </select>
           </div>
         </div>
+
+        {/* Definition and Elaboration Blocks */}
+        {steps.length > 0 && (fromVal !== '' || toVal !== '') && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-[var(--theme-border)]">
+             {/* Definitions Column */}
+             <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-lg text-[var(--theme-primary)]">Unit Definitions</h3>
+                <div className="space-y-4">
+                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
+                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{fromUnit.name} ({fromUnit.symbol})</h4>
+                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(fromUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
+                   </div>
+                   <div className="p-4 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded">
+                      <h4 className="font-semibold text-sm text-[var(--theme-text-base)] mb-1.5">{toUnit.name} ({toUnit.symbol})</h4>
+                      <p className="text-sm text-[var(--theme-text-muted)]" dangerouslySetInnerHTML={{ __html: getUnitDefinition(toUnit, cat?.name || '', units.find(u => u.ratioToBase === 1 || u.id === cat?.baseUnit)) }}></p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Elaborative Context Column */}
+             <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-lg text-[var(--theme-primary)]">
+                   {calcMode === 'doc' ? 'Document Elaboration' : calcMode === 'sheets' ? 'Spreadsheet Elaboration' : 'Kid-Friendly Explanation'}
+                </h3>
+                <div className="p-5 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded h-full">
+                   {renderElaborativeContent()}
+                </div>
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );
