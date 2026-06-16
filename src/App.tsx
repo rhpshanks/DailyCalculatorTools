@@ -5,6 +5,7 @@ import CategoryMenu from './components/CategoryMenu';
 import Calculator from './components/Calculator';
 import Converter from './components/Converter';
 import { ThemeProvider } from './utils/themeContext';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
           </div>
         </div>
       </Router>
+      <Analytics />
     </ThemeProvider>
   );
 }
