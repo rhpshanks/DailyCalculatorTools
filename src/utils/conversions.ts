@@ -2,7 +2,7 @@ import { UnitGroup } from '../types';
 
 export const unitGroups: UnitGroup[] = [
   {
-    name: 'Group 1 — Common Converters',
+    name: 'Common Calculators',
     categories: [
       {
         id: 'length', name: 'Length', baseUnit: 'm',
@@ -83,7 +83,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 2 — Engineering Converters',
+    name: 'Engineering Calculators',
     categories: [
       {
         id: 'pressure', name: 'Pressure', baseUnit: 'pa',
@@ -195,7 +195,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 3 — Heat Converters',
+    name: 'Heat Calculators',
     categories: [
       {
         id: 'heat', name: 'Thermal Energy', baseUnit: 'j',
@@ -220,7 +220,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 4 — Fluids Converters',
+    name: 'Fluids Calculators',
     categories: [
       {
         id: 'flow-vol', name: 'Flow Rate (Volume)', baseUnit: 'm3s',
@@ -243,7 +243,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 5 — Light Converters',
+    name: 'Light Calculators',
     categories: [
       {
         id: 'illuminance', name: 'Illuminance', baseUnit: 'lx',
@@ -264,7 +264,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 6 — Electricity Converters',
+    name: 'Electricity Calculators',
     categories: [
       {
         id: 'charge', name: 'Electric Charge', baseUnit: 'c',
@@ -301,7 +301,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 7 — Magnetism Converters',
+    name: 'Magnetism Calculators',
     categories: [
       {
         id: 'mag-flux', name: 'Magnetic Flux', baseUnit: 'wb',
@@ -322,7 +322,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 8 — Radiology Converters',
+    name: 'Radiology Calculators',
     categories: [
       {
         id: 'rad-activity', name: 'Radiation - Activity', baseUnit: 'bq',
@@ -351,7 +351,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 9 — Common Unit Systems',
+    name: 'Common Unit Systems',
     categories: [
       {
         id: 'prefixes', name: 'Metric Prefixes', baseUnit: 'one',
@@ -382,7 +382,7 @@ export const unitGroups: UnitGroup[] = [
     ]
   },
   {
-    name: 'Group 10 — Mathematics & Science',
+    name: 'Mathematics & Science',
     categories: [
       {
         id: 'frequency', name: 'Frequency', baseUnit: 'hz',

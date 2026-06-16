@@ -38,7 +38,7 @@ export default function Converter() {
 
   const [fromVal, setFromVal] = useState('1');
   const [toVal, setToVal] = useState('');
-  const [precision, setPrecision] = useState(6);
+  const [precision, setPrecision] = useState<number | 'auto'>('auto');
   const [activeInput, setActiveInput] = useState<'from' | 'to'>('from');
   const [steps, setSteps] = useState<string[]>([]);
 
@@ -65,9 +65,14 @@ export default function Converter() {
     return result;
   };
 
+  const formatForStep = (numVal: number) => {
+    const precVal = precision === 'auto' ? 10 : precision;
+    return numVal.toFixed(precVal).replace(/\.?0+$/, '');
+  };
+
   const generateSteps = (val: number, from: typeof fromUnit, to: typeof toUnit, finalRes: number) => {
     if (!from || !to) return [];
-    if (from.id === to.id) return ['Step 1: Units are identical. No conversion needed.'];
+    if (from.id === to.id) return ['Step 1: Units are identical. No calculation needed.'];
 
     const localSteps = [];
     
@@ -94,13 +99,13 @@ export default function Converter() {
         formulaStr = '°F = (K − 273.15) × 9/5 + 32';
         substituteStr = `(${val} − 273.15) × 9/5 + 32 = ${(val - 273.15).toFixed(4)} × 1.8 + 32 = ${finalRes.toFixed(4)}`;
       } else {
-        formulaStr = `Convert ${from.symbol} to base, then base to ${to.symbol}`;
+        formulaStr = `Calculate ${from.symbol} to base, then base to ${to.symbol}`;
         substituteStr = `Result: ${finalRes.toFixed(4)}`;
       }
 
       localSteps.push(`Step 1: Formula \u2192 ${formulaStr}`);
       localSteps.push(`Step 2: Substitute \u2192 ${substituteStr}`);
-      localSteps.push(`Step 3: Result \u2192 ${val}${from.symbol} = ${finalRes.toFixed(precision)}${to.symbol}`);
+      localSteps.push(`Step 3: Result \u2192 ${val}${from.symbol} = ${formatForStep(finalRes)}${to.symbol}`);
       return localSteps;
     }
 
@@ -113,18 +118,18 @@ export default function Converter() {
           ? compositeRatio.toString() 
           : compositeRatio.toFixed(6).replace(/\.?0+$/, '');
 
-      localSteps.push(`Step 1: Identify conversion factor \u2192 1 ${from.name} = ${factorFormat} ${to.symbol}`);
+      localSteps.push(`Step 1: Identify calculation factor \u2192 1 ${from.name} = ${factorFormat} ${to.symbol}`);
       localSteps.push(`Step 2: Multiply \u2192 ${val} \u00d7 ${factorFormat} = ${(val * compositeRatio).toFixed(4).replace(/\.?0+$/, '')}`);
-      localSteps.push(`Step 3: Result \u2192 ${val} ${from.symbol} = ${finalRes.toFixed(precision)} ${to.symbol}`);
+      localSteps.push(`Step 3: Result \u2192 ${val} ${from.symbol} = ${formatForStep(finalRes)} ${to.symbol}`);
     } else {
-      localSteps.push(`Step 1: Convert ${val} ${from.symbol} to base unit (${cat?.baseUnit})`);
+      localSteps.push(`Step 1: Calculate ${val} ${from.symbol} to base unit (${cat?.baseUnit})`);
       let baseVal = val;
       if (from.toBase) baseVal = from.toBase(val);
       else if (from.ratioToBase) baseVal = val * from.ratioToBase;
       localSteps.push(`  \u2192 Result: ${baseVal.toPrecision(6)}`);
 
-      localSteps.push(`Step 2: Convert base unit to ${to.name}`);
-      localSteps.push(`Step 3: Result \u2192 ${val} ${from.symbol} = ${finalRes.toFixed(precision)} ${to.symbol}`);
+      localSteps.push(`Step 2: Calculate base unit to ${to.name}`);
+      localSteps.push(`Step 3: Result \u2192 ${val} ${from.symbol} = ${formatForStep(finalRes)} ${to.symbol}`);
     }
     
     return localSteps;
@@ -133,11 +138,13 @@ export default function Converter() {
   useEffect(() => {
     if (!fromUnit || !toUnit) return;
     
+    const precVal = precision === 'auto' ? 10 : precision;
+
     if (activeInput === 'from') {
       const num = parseFloat(fromVal);
       if (!isNaN(num)) {
         const res = convert(num, fromUnit, toUnit);
-        setToVal(res.toFixed(precision).replace(/\\.?0+$/, ''));
+        setToVal(res.toFixed(precVal).replace(/\.?0+$/, ''));
         setSteps(generateSteps(num, fromUnit, toUnit, res));
       } else {
         setToVal('');
@@ -147,7 +154,7 @@ export default function Converter() {
       const num = parseFloat(toVal);
       if (!isNaN(num)) {
         const res = convert(num, toUnit, fromUnit);
-        setFromVal(res.toFixed(precision).replace(/\\.?0+$/, ''));
+        setFromVal(res.toFixed(precVal).replace(/\.?0+$/, ''));
         setSteps(generateSteps(num, toUnit, fromUnit, res));
       } else {
         setFromVal('');
@@ -176,35 +183,35 @@ export default function Converter() {
   };
 
   if (!cat) {
-    return <div className="p-8 text-center text-[var(--theme-text-muted)]">Please select a valid converter from the menu.</div>;
+    return <div className="p-8 text-center text-[var(--theme-text-muted)]">Please select a valid calculator from the menu.</div>;
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div className="bg-[var(--theme-bg-panel)] rounded shadow-sm border border-[var(--theme-border)] p-6">
         <h1 className="text-3xl font-bold text-[var(--theme-primary)] mb-2">
-          Convert {fromUnit?.name} to {toUnit?.name}
+          Calculate {fromUnit?.name} to {toUnit?.name}
         </h1>
         <p className="text-[var(--theme-text-muted)] mb-8">
-          Please provide values below to convert {fromUnit?.name} to {toUnit?.name}, or vice versa.
+          Please provide values below to calculate {fromUnit?.name} to {toUnit?.name}, or vice versa.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end mb-6">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 min-w-0">
             <label className="text-sm font-semibold text-[var(--theme-text-base)]">From:</label>
             <div className="flex bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded overflow-hidden focus-within:ring-2 focus-within:ring-[var(--theme-primary)]">
               <input 
                 type="number"
                 value={fromVal}
                 onChange={(e) => { setActiveInput('from'); setFromVal(e.target.value); }}
-                className="flex-1 bg-transparent px-3 py-2 outline-none text-lg"
+                className="flex-1 bg-transparent px-3 py-2 outline-none text-lg min-w-0"
                 placeholder="Enter value"
               />
               <select 
                 title="converter selection"
                 value={fromUnit.id}
                 onChange={(e) => navigate(`/convert/${catId}-${e.target.value}-to-${toUnit.id}`)}
-                className="bg-[var(--theme-bg-panel)] border-l border-[var(--theme-border)] px-3 py-2 outline-none text-[var(--theme-text-muted)]"
+                className="w-[140px] flex-shrink-0 bg-[var(--theme-bg-panel)] border-l border-[var(--theme-border)] px-3 py-2 outline-none text-[var(--theme-text-muted)] text-sm"
               >
                 {units.map(u => <option key={u.id} value={u.id}>{u.name} ({u.symbol})</option>)}
               </select>
@@ -213,34 +220,27 @@ export default function Converter() {
 
           <button 
             onClick={handleSwap}
-            className="hidden md:flex p-3 rounded-full hover:bg-[var(--theme-border)] text-[var(--theme-primary)] transition-colors mb-[2px]"
+            className="p-3 rounded-full hover:bg-[var(--theme-border)] text-[var(--theme-primary)] transition-colors mb-[2px] mx-auto md:mx-0 flex items-center justify-center"
             title="Swap units"
           >
-            <ArrowLeftRight size={24} />
-          </button>
-          
-          <button 
-            onClick={handleSwap}
-            className="md:hidden p-2 mx-auto rounded hover:bg-[var(--theme-border)] text-[var(--theme-primary)] transition-colors"
-          >
-            <ArrowLeftRight size={20} className="rotate-90" />
+            <ArrowLeftRight size={24} className="rotate-90 md:rotate-0" />
           </button>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 min-w-0">
             <label className="text-sm font-semibold text-[var(--theme-text-base)]">To:</label>
             <div className="flex bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded overflow-hidden focus-within:ring-2 focus-within:ring-[var(--theme-primary)]">
               <input 
                 type="number"
                 value={toVal}
                 onChange={(e) => { setActiveInput('to'); setToVal(e.target.value); }}
-                className="flex-1 bg-transparent px-3 py-2 outline-none text-lg font-bold text-[var(--theme-primary)]"
+                className="flex-1 bg-transparent px-3 py-2 outline-none text-lg font-bold text-[var(--theme-primary)] min-w-0"
                 placeholder="Result"
               />
               <select 
                 title="converter selection to"
                 value={toUnit.id}
                 onChange={(e) => navigate(`/convert/${catId}-${fromUnit.id}-to-${e.target.value}`)}
-                className="bg-[var(--theme-bg-panel)] border-l border-[var(--theme-border)] px-3 py-2 outline-none text-[var(--theme-text-muted)]"
+                className="w-[140px] flex-shrink-0 bg-[var(--theme-bg-panel)] border-l border-[var(--theme-border)] px-3 py-2 outline-none text-[var(--theme-text-muted)] text-sm"
               >
                 {units.map(u => <option key={u.id} value={u.id}>{u.name} ({u.symbol})</option>)}
               </select>
@@ -276,13 +276,7 @@ export default function Converter() {
             onClick={() => { setActiveInput('from'); setFromVal(fromVal); }}
             className="px-6 py-2 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold rounded transition-colors"
           >
-            Convert
-          </button>
-          <button 
-            onClick={handleClear}
-            className="px-6 py-2 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold rounded transition-colors flex items-center gap-2"
-          >
-            <RotateCcw size={16} /> Clear
+            Calculate
           </button>
           <button 
             onClick={handleCopy}
@@ -296,9 +290,10 @@ export default function Converter() {
             <select 
               title="select precision"
               value={precision}
-              onChange={(e) => setPrecision(Number(e.target.value))}
+              onChange={(e) => setPrecision(e.target.value === 'auto' ? 'auto' : Number(e.target.value))}
               className="bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded px-2 py-1 outline-none text-sm"
             >
+              <option value="auto">Auto</option>
               {[2,4,6,8,10].map(p => <option key={p} value={p}>{p} decimals</option>)}
             </select>
           </div>

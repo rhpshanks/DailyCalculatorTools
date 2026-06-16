@@ -9,7 +9,7 @@ export default function NavBar() {
     <nav className="w-full bg-[var(--theme-primary)] text-white px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
       <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <ArrowLeftRight size={24} />
-        <span className="text-xl font-bold tracking-tight">Daily Converter Tools</span>
+        <span className="text-xl font-bold tracking-tight">Daily Calculator Tools</span>
       </Link>
       
       <div className="flex items-center gap-3">

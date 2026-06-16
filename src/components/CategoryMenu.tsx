@@ -25,7 +25,7 @@ export default function CategoryMenu() {
   return (
     <div className="w-full md:w-[280px] lg:w-[320px] flex-shrink-0 flex flex-col h-full border border-[var(--theme-border)] bg-[var(--theme-bg-panel)] rounded overflow-hidden">
       <div className="bg-[var(--theme-primary-dark)] text-white px-4 py-3">
-        <h2 className="font-bold text-lg">All Converters</h2>
+        <h2 className="font-bold text-lg">All Calculators</h2>
       </div>
       
       <div className="p-3 border-b border-[var(--theme-border)]">
@@ -33,7 +33,7 @@ export default function CategoryMenu() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-muted)]" />
           <input
             type="text"
-            placeholder="Search converters..."
+            placeholder="Search calculators..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 bg-[var(--theme-bg-page)] border border-[var(--theme-border)] rounded focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)] text-sm"
@@ -84,7 +84,7 @@ export default function CategoryMenu() {
         ))}
         {filteredGroups.length === 0 && (
           <div className="p-4 text-center text-sm text-[var(--theme-text-muted)]">
-            No converters found.
+            No calculators found.
           </div>
         )}
       </div>
