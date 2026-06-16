@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import * as math from 'mathjs';
-import { Copy, Delete } from 'lucide-react';
+import { Copy, Delete, Check } from 'lucide-react';
 
 export default function Calculator() {
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('');
+  const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<{expr: string, res: string}[]>([]);
 
   useEffect(() => {
@@ -52,15 +53,17 @@ export default function Calculator() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(expression || result);
+    navigator.clipboard.writeText(expression || result || '0');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="flex flex-col bg-[var(--theme-bg-panel)] rounded shadow-sm border border-[var(--theme-border)] overflow-hidden">
       <div className="p-6 bg-[var(--theme-bg-page)] border-b border-[var(--theme-border)] text-right">
         <div className="flex justify-between items-start mb-2">
-           <button onClick={copyToClipboard} className="text-[var(--theme-text-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded hover:bg-black/5">
-             <Copy size={20} />
+           <button onClick={copyToClipboard} className="text-[var(--theme-text-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded hover:bg-black/5" title="Copy expression/result">
+             {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
            </button>
            <div className="text-xl text-[var(--theme-text-muted)] min-h-[30px] overflow-hidden break-all">{expression}</div>
         </div>

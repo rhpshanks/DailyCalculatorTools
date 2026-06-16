@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeftRight, Copy, RotateCcw } from 'lucide-react';
+import { ArrowLeftRight, Copy, RotateCcw, Check } from 'lucide-react';
 import { unitGroups, getAllCategories } from '../utils/conversions';
 
 function parseConvertParams(slug: string) {
@@ -40,6 +40,8 @@ export default function Converter() {
   const [toVal, setToVal] = useState('');
   const [precision, setPrecision] = useState<number | 'auto'>('auto');
   const [calcMode, setCalcMode] = useState<'doc' | 'sheets' | 'kids'>('doc');
+  const [copiedVal, setCopiedVal] = useState(false);
+  const [copiedSteps, setCopiedSteps] = useState(false);
   const [activeInput, setActiveInput] = useState<'from' | 'to'>('from');
   const [steps, setSteps] = useState<string[]>([]);
 
@@ -274,6 +276,14 @@ export default function Converter() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(toVal);
+    setCopiedVal(true);
+    setTimeout(() => setCopiedVal(false), 2000);
+  };
+
+  const handleCopySteps = () => {
+    navigator.clipboard.writeText(renderStepsByMode().join('\n'));
+    setCopiedSteps(true);
+    setTimeout(() => setCopiedSteps(false), 2000);
   };
 
   if (!cat) {
@@ -370,11 +380,11 @@ export default function Converter() {
                 ))}
               </div>
               <button 
-                onClick={() => navigator.clipboard.writeText(renderStepsByMode().join('\n'))}
+                onClick={handleCopySteps}
                 className="absolute bottom-4 right-4 text-[var(--theme-text-muted)] hover:text-[var(--theme-primary)] mb-0"
                 title="Copy Steps"
               >
-                <Copy size={18} />
+                {copiedSteps ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
               </button>
             </div>
           </div>
@@ -391,7 +401,8 @@ export default function Converter() {
             onClick={handleCopy}
             className="px-6 py-2 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold rounded transition-colors flex items-center gap-2"
           >
-            <Copy size={16} /> Copy
+            {copiedVal ? <Check size={16} /> : <Copy size={16} />}
+            {copiedVal ? 'Copied!' : 'Copy'}
           </button>
           
           <div className="ml-auto flex items-center gap-2">
