@@ -385,7 +385,7 @@ export const unitGroups: UnitGroup[] = [
     name: 'Mathematics & Science',
     categories: [
       {
-        id: 'cycles', name: 'Cycles', baseUnit: 'hz',
+        id: 'frequency', name: 'Frequency', baseUnit: 'hz',
         units: [
           { id: 'hz', name: 'Hertz', symbol: 'Hz', ratioToBase: 1 },
           { id: 'khz', name: 'Kilohertz', symbol: 'kHz', ratioToBase: 1000 },
