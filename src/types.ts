@@ -1,30 +1,20 @@
-export interface FAQ {
-  question: string;
-  answer: string;
-}
-
-export interface TableRow {
-  label: string;
-  value: string;
-}
-
-export interface TableData {
-  headers: [string, string];
-  rows: TableRow[];
-}
-
-export interface ToolMetadata {
+export interface Unit {
   id: string;
   name: string;
-  category: string;
-  slug: string;
-  metaTitle: string;
-  metaDescription: string;
-  benefit: string;
-  formulaText?: string;
-  exampleText?: string;
-  faqs: FAQ[];
-  relatedTools: string[]; // array of slugs
-  tableData?: TableData;
-  status: 'Active' | 'Draft' | 'Hidden';
+  symbol: string;
+  ratioToBase?: number;
+  toBase?: (val: number) => number;
+  fromBase?: (val: number) => number;
+}
+
+export interface UnitCategory {
+  id: string;
+  name: string;
+  baseUnit: string;
+  units: Unit[];
+}
+
+export interface UnitGroup {
+  name: string;
+  categories: UnitCategory[];
 }

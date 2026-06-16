@@ -1,12 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Outfit", system-ui, sans-serif;
+  --color-primary: var(--theme-primary);
+  --color-primary-dark: var(--theme-primary-dark);
+  --color-bg-page: var(--theme-bg-page);
+  --color-bg-panel: var(--theme-bg-panel);
+  --color-text-base: var(--theme-text-base);
+  --color-text-muted: var(--theme-text-muted);
+  --color-border: var(--theme-border);
 }
 
-/* Base custom styles to align with the premium glassmorphism look */
+:root {
+  --theme-primary: #1A6B3A;
+  --theme-primary-dark: #114c27;
+  --theme-bg-page: #f8f9fa;
+  --theme-bg-panel: #ffffff;
+  --theme-text-base: #111827;
+  --theme-text-muted: #6b7280;
+  --theme-border: #e5e7eb;
+}
+
+:root.colorblind {
+  --theme-primary: #1F5C99;
+  --theme-primary-dark: #14406e;
+}
+
+:root.dark {
+  --theme-bg-page: #1A1A2E;
+  --theme-bg-panel: #16213e;
+  --theme-text-base: #E0E0E0;
+  --theme-text-muted: #9ca3af;
+  --theme-border: #2d3748;
+}
+
 body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--theme-bg-page);
+  color: var(--theme-text-base);
+  font-family: ui-sans-serif, system-ui, sans-serif;
 }

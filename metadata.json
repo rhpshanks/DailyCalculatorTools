@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Daily Calculator Tools",
+  "description": "A comprehensive suite of a scientific calculator and various unit converters.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
