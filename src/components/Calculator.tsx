@@ -7,23 +7,7 @@ export default function Calculator() {
   const [result, setResult] = useState('');
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<{expr: string, res: string}[]>([]);
-
-  useEffect(() => {
-    try {
-      if (expression.trim() !== '') {
-        const res = math.evaluate(expression);
-        if (typeof res === 'number') {
-          setResult(math.format(res, { precision: 10 }));
-        } else {
-          setResult('');
-        }
-      } else {
-        setResult('');
-      }
-    } catch {
-      setResult(''); // invalid expression, keep result empty
-    }
-  }, [expression]);
+  const [isCalculated, setIsCalculated] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,37 +48,59 @@ export default function Calculator() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [expression]);
+  }, [expression, isCalculated, result]);
 
   const handleChar = (char: string) => {
-    setExpression(prev => prev + char);
+    if (isCalculated) {
+      setIsCalculated(false);
+      // If continuing calculation with an operator, append to result. Otherwise start fresh
+      if (/[+\-*/^%]/.test(char)) {
+        setExpression(result + char);
+      } else {
+        setExpression(char);
+      }
+      setResult('');
+    } else {
+      setExpression(prev => prev + char);
+    }
   };
 
   const calculate = () => {
     try {
+      if (!expression.trim()) return;
       const res = math.evaluate(expression);
       if (typeof res === 'number') {
         const formatted = math.format(res, { precision: 10 });
         setHistory(prev => [{ expr: expression, res: formatted }, ...prev].slice(0, 10));
-        setExpression(formatted);
+        setResult(formatted);
+        setIsCalculated(true);
+      } else {
         setResult('');
+        setIsCalculated(false);
       }
     } catch {
       setResult('Error');
+      setIsCalculated(true);
     }
   };
 
   const clear = () => {
     setExpression('');
     setResult('');
+    setIsCalculated(false);
   };
 
   const backspace = () => {
-    setExpression(prev => prev.slice(0, -1));
+    if (isCalculated) {
+      setResult('');
+      setIsCalculated(false);
+    } else {
+      setExpression(prev => prev.slice(0, -1));
+    }
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(expression || result || '0');
+    navigator.clipboard.writeText(result || expression || '0');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -127,34 +133,34 @@ export default function Calculator() {
         </p>
 
         <div className="w-full max-w-2xl mx-auto flex flex-col bg-[var(--theme-bg-panel)] rounded-xl shadow-lg border border-[var(--theme-border)] overflow-hidden">
-          {/* LCD Screen Display */}
-          <div className="p-6 bg-zinc-900 dark:bg-zinc-950 border-b border-zinc-800 text-right text-white">
+          {/* Theme-Adaptive Screen Display */}
+          <div className="p-6 bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 text-right text-zinc-900 dark:text-white transition-colors duration-300">
             <div className="flex justify-between items-start mb-2">
                <button 
                  onClick={copyToClipboard} 
-                 className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10" 
+                 className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-850 dark:text-zinc-400 dark:hover:text-white transition-colors p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/10" 
                  title="Copy expression/result"
                >
                  {copied ? (
                    <>
-                     <Check size={16} className="text-green-400" />
-                     <span className="text-xs text-green-400 font-semibold">Copied!</span>
+                     <Check size={16} className="text-green-600 dark:text-green-400" />
+                     <span className="text-xs text-green-600 dark:text-green-400 font-semibold">Copied!</span>
                    </>
                  ) : (
                    <Copy size={16} />
                  )}
                </button>
-               <div className="text-lg font-mono text-zinc-400 min-h-[30px] overflow-hidden break-all">
-                 {formatExpressionForDisplay(expression)}
+               <div className="text-lg font-mono text-zinc-500 dark:text-zinc-400 min-h-[30px] overflow-hidden break-all">
+                 {isCalculated ? formatExpressionForDisplay(expression) : ''}
                </div>
             </div>
-            <div className="text-4xl font-mono text-white min-h-[48px] overflow-hidden break-all font-bold">
-              {formatExpressionForDisplay(result) || formatExpressionForDisplay(expression) || '0'}
+            <div className="text-4xl font-mono text-zinc-900 dark:text-white min-h-[48px] overflow-hidden break-all font-bold">
+              {isCalculated ? formatExpressionForDisplay(result) : (formatExpressionForDisplay(expression) || '0')}
             </div>
           </div>
 
           {/* Grid Layout of Keys (6-Column layout for absolute alignment) */}
-          <div className="grid grid-cols-6 gap-[1.5px] bg-zinc-200 dark:bg-zinc-800 p-[1.5px]">
+          <div className="grid grid-cols-6 gap-[1.5px] bg-zinc-200 dark:bg-zinc-800 p-[1.5px] transition-colors duration-300">
             {/* Row 1 */}
             <CalcBtn onClick={() => handleChar('sin(')}>sin</CalcBtn>
             <CalcBtn onClick={() => handleChar('asin(')}>asin</CalcBtn>
@@ -176,32 +182,32 @@ export default function Calculator() {
             {/* Row 3 */}
             <CalcBtn onClick={() => handleChar('tan(')}>tan</CalcBtn>
             <CalcBtn onClick={() => handleChar('atan(')}>atan</CalcBtn>
-            <CalcBtn onClick={() => handleChar('7')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">7</CalcBtn>
-            <CalcBtn onClick={() => handleChar('8')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">8</CalcBtn>
-            <CalcBtn onClick={() => handleChar('9')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">9</CalcBtn>
+            <CalcBtn onClick={() => handleChar('7')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">7</CalcBtn>
+            <CalcBtn onClick={() => handleChar('8')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">8</CalcBtn>
+            <CalcBtn onClick={() => handleChar('9')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">9</CalcBtn>
             <CalcBtn onClick={() => handleChar('/')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">÷</CalcBtn>
 
             {/* Row 4 */}
             <CalcBtn onClick={() => handleChar('^')}>x^y</CalcBtn>
             <CalcBtn onClick={() => handleChar('^2')}>x²</CalcBtn>
-            <CalcBtn onClick={() => handleChar('4')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">4</CalcBtn>
-            <CalcBtn onClick={() => handleChar('5')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">5</CalcBtn>
-            <CalcBtn onClick={() => handleChar('6')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">6</CalcBtn>
+            <CalcBtn onClick={() => handleChar('4')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">4</CalcBtn>
+            <CalcBtn onClick={() => handleChar('5')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">5</CalcBtn>
+            <CalcBtn onClick={() => handleChar('6')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">6</CalcBtn>
             <CalcBtn onClick={() => handleChar('*')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">×</CalcBtn>
 
             {/* Row 5 */}
             <CalcBtn onClick={() => handleChar('sqrt(')}>√</CalcBtn>
             <CalcBtn onClick={() => handleChar('pi')}>π</CalcBtn>
-            <CalcBtn onClick={() => handleChar('1')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">1</CalcBtn>
-            <CalcBtn onClick={() => handleChar('2')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">2</CalcBtn>
-            <CalcBtn onClick={() => handleChar('3')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">3</CalcBtn>
+            <CalcBtn onClick={() => handleChar('1')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">1</CalcBtn>
+            <CalcBtn onClick={() => handleChar('2')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">2</CalcBtn>
+            <CalcBtn onClick={() => handleChar('3')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">3</CalcBtn>
             <CalcBtn onClick={() => handleChar('-')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">−</CalcBtn>
 
             {/* Row 6 */}
             <CalcBtn onClick={() => handleChar('abs(')}>|x|</CalcBtn>
             <CalcBtn onClick={() => handleChar('e')}>e</CalcBtn>
-            <CalcBtn onClick={() => handleChar('0')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800 !col-span-2">0</CalcBtn>
-            <CalcBtn onClick={() => handleChar('.')} className="bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-lg dark:bg-zinc-900 dark:hover:bg-zinc-800">.</CalcBtn>
+            <CalcBtn onClick={() => handleChar('0')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg !col-span-2">0</CalcBtn>
+            <CalcBtn onClick={() => handleChar('.')} className="bg-white hover:bg-zinc-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 text-zinc-900 font-semibold text-lg">.</CalcBtn>
             <CalcBtn onClick={() => handleChar('+')} className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)] text-white font-bold text-lg">+</CalcBtn>
 
             {/* Row 7 */}
@@ -220,7 +226,11 @@ export default function Calculator() {
               <li 
                 key={i} 
                 className="flex justify-between items-center py-3 px-4 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                onClick={() => setExpression(h.res)}
+                onClick={() => {
+                  setExpression(h.res);
+                  setIsCalculated(false);
+                  setResult('');
+                }}
                 title="Click to load result into calculator"
               >
                 <span className="text-[var(--theme-text-muted)] font-mono">{formatExpressionForDisplay(h.expr)} =</span>
@@ -238,7 +248,7 @@ function CalcBtn({ children, onClick, className = '' }: { children?: React.React
   return (
     <button
       onClick={onClick}
-      className={`py-4 px-2 text-center bg-[#f8f9fa] dark:bg-[#1e1e2d] hover:brightness-95 dark:hover:brightness-110 active:brightness-90 transition-all text-sm font-medium ${className}`}
+      className={`py-4 px-2 text-center bg-[#f8f9fa] dark:bg-[#1e1e2d] text-zinc-800 dark:text-zinc-200 hover:brightness-95 dark:hover:brightness-110 active:brightness-90 transition-all text-sm font-medium ${className}`}
     >
       {children}
     </button>
