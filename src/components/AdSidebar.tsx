@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 export default function AdSidebar() {
   useEffect(() => {
     try {
-      // Query all adsbygoogle containers on the page and push once for each unit
-      const ads = document.querySelectorAll('.adsbygoogle');
+      // Query only uninitialized adsbygoogle containers to prevent duplicate push errors
+      const ads = document.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status])');
       ads.forEach(() => {
         try {
           ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
